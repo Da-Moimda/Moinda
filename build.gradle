@@ -63,3 +63,4 @@ project("talk-web") {
         implementation project(':talk-api')
     }
 }
+
