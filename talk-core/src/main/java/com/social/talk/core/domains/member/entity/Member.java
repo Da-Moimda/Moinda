@@ -1,4 +1,4 @@
-package com.social.talk.core.member.entity;
+package com.social.talk.core.domains.member.entity;
 
 
 import com.social.talk.core.BaseEntity;
