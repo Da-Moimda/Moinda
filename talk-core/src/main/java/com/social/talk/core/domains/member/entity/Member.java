@@ -2,6 +2,7 @@ package com.social.talk.core.domains.member.entity;
 
 
 import com.social.talk.core.BaseEntity;
+import com.social.talk.core.domains.member.dto.MemberDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,16 @@ public class Member extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Transient
-    private String confirmPassword;
+    public String getEmail() {
+        return email;
+    }
 
+    public MemberDto bindToMemberDto() {
+        return new MemberDto(
+                this.getId(),
+                this.email,
+                this.name,
+                this.password
+        );
+    }
 }
