@@ -58,9 +58,3 @@ project("talk-api") {
     }
 }
 
-project("talk-web") {
-    dependencies {
-        implementation project(':talk-api')
-    }
-}
-
