@@ -1,0 +1,5 @@
+rootProject.name = 'tokTalk'
+// add Multi Module Target Directory
+include 'talk-core'
+include 'talk-api'
+include 'talk-web'
