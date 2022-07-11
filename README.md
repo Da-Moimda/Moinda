@@ -3,7 +3,7 @@
 Multi Module Project
 
 ```java
-   Core -> Api -> Web 
+    Api -> Web 
 ```
 
 ### Tech
@@ -14,7 +14,8 @@ Multi Module Project
 
 |브랜치명|용도|
 |---|---|
-|Master|현재 배포중|
-|Feature|새로운 기능|
-|HotFix|수정|
-|Refactoring|간단한 변경|
+|master|현재 배포중|
+|feature|새로운 기능|
+|hotFix|수정|
+|refactoring|간단한 변경|
+|develope|개발중|
