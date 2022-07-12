@@ -2,14 +2,19 @@ package com.social.talk.api.member.dto;
 
 
 import com.social.talk.core.domains.member.entity.Member;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+//  cannot deserialize from Object value (no delegate- or property-based Creator)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Getter
 public class MemberCreateDto {
 
     @Email
@@ -18,15 +23,11 @@ public class MemberCreateDto {
     @NotBlank(message = "이름을 입력해주세요.")
     private String name;
 
-    @Min(value = 4)
+    @Size(min = 8)
     private String password;
 
-    @Min(value = 4)
+    @Size(min = 8)
     private String confirmPassword;
-
-    public String getEmail() {
-        return email;
-    }
 
     public boolean isMatchPassword() {
         return this.password.equals(this.confirmPassword);

@@ -18,7 +18,7 @@ public class MemberCommandService {
 
     public MemberDto create(MemberCreateDto dto) {
 
-        isExistMember(dto.getEmail());
+        isExistMember(dto);
 
         Member savedEntity = memberRepository.save(dto.bindEntity());
 
@@ -31,8 +31,8 @@ public class MemberCommandService {
     }
 
     @Transactional(readOnly = true)
-    public void isExistMember(String email) {
-        if (memberRepository.existByEmail(email)) {
+    public void isExistMember(MemberCreateDto dto) {
+        if (memberRepository.existByEmail(dto.getEmail())) {
             throw new IllegalStateException("존재하는 이메일입니다.");
         }
     }
