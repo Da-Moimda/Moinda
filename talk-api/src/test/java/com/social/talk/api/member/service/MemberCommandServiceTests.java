@@ -1,7 +1,6 @@
 package com.social.talk.api.member.service;
 
 import com.social.talk.api.member.dto.MemberCreateDto;
-import com.social.talk.core.domains.member.dto.MemberDto;
 import com.social.talk.core.domains.member.entity.Member;
 import com.social.talk.core.domains.member.entity.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
