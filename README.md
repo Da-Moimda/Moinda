@@ -1,4 +1,4 @@
-### TokTalk SNS
+### Moinda
 
 Multi Module Project
 

@@ -1,4 +1,4 @@
-rootProject.name = 'tokTalk'
+rootProject.name = 'Moinda'
 // add Multi Module Target Directory
-include 'talk-core'
-include 'talk-api'
+include 'moinda-core'
+include 'moinda-api'
