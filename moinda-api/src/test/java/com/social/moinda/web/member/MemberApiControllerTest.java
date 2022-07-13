@@ -3,11 +3,8 @@ package com.social.moinda.web.member;
 import com.social.moinda.api.member.dto.MemberCreateDto;
 import com.social.moinda.api.member.service.MemberCommandService;
 import com.social.moinda.web.BaseApiConfig;
-import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -17,8 +14,6 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Log4j2
-@ExtendWith(MockitoExtension.class)
 class MemberApiControllerTest extends BaseApiConfig {
 
     @MockBean
