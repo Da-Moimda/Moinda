@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/*
+    ArgumentResolver + @AuthenticationPrincipal , Filter 를 사용해서
+    어떻게 받아올지 설정해야 한다.
+ */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
