@@ -9,6 +9,8 @@ Multi Module Project
 ### Tech
 - Java 
 - Spring Boot 2.7.1
+- Spring Data JPA
+- Unit Test
 
 ### Branch Flow
 
@@ -19,3 +21,8 @@ Multi Module Project
 |hotFix|수정|
 |refactoring|간단한 변경|
 |develope|개발중|
+
+
+### Dev Issue
+
+#### 1.  [No bean named 'entityManagerFactory' available](https://awse2050.tistory.com/110)
