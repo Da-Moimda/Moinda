@@ -27,7 +27,7 @@ import static org.mockito.Mockito.times;
 @ExtendWith(MockitoExtension.class)
 class GroupCommandServiceTests {
 
-    @Spy
+    @Mock
     private MemberRepository memberRepository;
 
     @Mock
@@ -50,10 +50,11 @@ class GroupCommandServiceTests {
                 300
         );
 
-        Member member = new Member("dssd@dsds.com","dsds","1212");
+        Group group = groupCreateDto.bindToEntity();
+        Member member = new Member("dssd@dsds.com","dsds","1212", group);
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
-        given(groupRepository.save(any(Group.class))).willReturn(groupCreateDto.bindToEntity());
+        given(groupRepository.save(any(Group.class))).willReturn(group);
 
         groupCommandService.create(groupCreateDto);
 

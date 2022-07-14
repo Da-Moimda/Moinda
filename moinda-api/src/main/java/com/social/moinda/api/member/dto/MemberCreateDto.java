@@ -37,7 +37,8 @@ public class MemberCreateDto {
         return new Member(
                 this.email,
                 this.name,
-                this.password
+                this.password,
+                null
         );
     }
 }

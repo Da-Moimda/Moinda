@@ -6,13 +6,16 @@ import com.social.moinda.core.domains.member.dto.MemberDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "groups")
 @Getter
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AttributeOverride(name = "id", column = @Column(name = "group_id"))
+@Table(name = "groups")
+@Entity
 public class Group extends BaseEntity {
 
     @Column(name = "group_name", nullable = false, length = 30, unique = true)
@@ -35,6 +38,7 @@ public class Group extends BaseEntity {
     })
     private GroupLocation location;
 
+    // TODO : fix to @AllArgsConstructor
     public Group(String name,
                  String introduce,
                  GroupLocation location,
