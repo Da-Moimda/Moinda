@@ -19,21 +19,31 @@ public class GroupCommandService {
     private final MemberRepository memberRepository;
 
     public GroupCreateResponse create(GroupCreateDto groupCreateDto) {
-        // TODO : Service 를 가져오는 것으로 변경 ??
-        Member member = memberRepository.findById(groupCreateDto.getMemberId())
-                .orElseThrow(() -> new IllegalStateException("없는 사용자입니다."));
+        // TODO : Service 를 가져오는 것으로 변경 ?? , 예외코드 커스텀 필요
+        Member member = findMember(groupCreateDto.getMemberId());
 
-        Group entity = groupCreateDto.bindToEntity();
+        Group group = groupCreateDto.bindToEntity();
 
+        member.setGroup(group);
         //TODO : Member에서 영속성전이로 MemberRepository에서 Save하는 것으로 바꾸기. -> Test Code 변경필요.
-        entity = groupRepository.save(entity);
-//        memberRepository.save(member);
-        System.out.println("member : " + member);
-        System.out.println("entity : " + entity);
+        memberRepository.save(member);
 
-        GroupCreateResponse groupCreateResponse = entity.bindToCreateResponse(member.bindToMemberDto());
-        System.out.println("res : " + groupCreateResponse);
+        GroupCreateResponse groupCreateResponse = group.bindToCreateResponse(member.bindToMemberDto());
         return groupCreateResponse;
     }
 
+    @Transactional(readOnly = true)
+    public Member findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalStateException("없는 사용자입니다."));
+    }
+
+    /*
+        TODO : 양방향 매핑으로 변경시 로직수정 필요
+     */
+    public void remove(Long groupId, Long memberId) {
+        Member member = findMember(memberId);
+        groupRepository.deleteById(groupId); // TODO : 추가적인 select 쿼리발생 -> 벌크성 쿼리로 변경
+        member.setGroup(null);
+    }
 }

@@ -11,7 +11,6 @@ import lombok.ToString;
 import javax.persistence.*;
 
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "group_id"))
 @Table(name = "groups")

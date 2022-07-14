@@ -4,10 +4,7 @@ package com.social.moinda.core.domains.member.entity;
 import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.member.dto.MemberDto;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -34,6 +31,10 @@ public class Member extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "group_id")
     private Group group;
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
 
     // TODO : CreateResponse 클래스로 변경해서 사용하기
     public MemberDto bindToMemberDto() {

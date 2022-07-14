@@ -6,13 +6,11 @@ import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupRepository;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -20,6 +18,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -54,12 +53,12 @@ class GroupCommandServiceTests {
         Member member = new Member("dssd@dsds.com","dsds","1212", group);
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
-        given(groupRepository.save(any(Group.class))).willReturn(group);
+        given(memberRepository.save(any(Member.class))).willReturn(member);
 
         groupCommandService.create(groupCreateDto);
 
         then(memberRepository).should(times(1)).findById(anyLong());
-        then(groupRepository).should(times(1)).save(any(Group.class));
+        then(memberRepository).should(times(1)).save(any(Member.class));
         assertThatNoException();
     }
 
@@ -85,6 +84,22 @@ class GroupCommandServiceTests {
 
         then(memberRepository).shouldHaveNoMoreInteractions();
         then(groupRepository).shouldHaveNoMoreInteractions();
+    }
+
+    @DisplayName("그룹 해체하기 - 성공")
+    @Test
+    void removeGroupSuccessTest() {
+
+        Member member = new Member("user1@eamil.com", "user1", "12121212", null);
+
+        doNothing().when(groupRepository).deleteById(anyLong());
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        groupCommandService.remove(anyLong(), 1L);
+
+        then(memberRepository).should(times(1)).findById(anyLong());
+        then(groupRepository).should(times(1)).deleteById(anyLong());
+        assertThatNoException();
     }
 
 }
