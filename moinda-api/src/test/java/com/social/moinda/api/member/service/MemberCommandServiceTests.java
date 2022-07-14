@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -49,7 +50,7 @@ class MemberCommandServiceTests {
         MemberCreateDto createDto = new MemberCreateDto("user1@email.com", "user1", "12121212", "12121212");
         Member member = createDto.bindEntity();
 
-        given(memberRepository.existByEmail(createDto.getEmail())).willReturn(true);
+        given(memberRepository.existByEmail(anyString())).willReturn(true);
 
         assertThatThrownBy(() -> memberCommandService.create(createDto))
                 .isInstanceOf(IllegalStateException.class);
@@ -58,7 +59,7 @@ class MemberCommandServiceTests {
         then(memberRepository).should(times(0)).save(any(Member.class));
     }
 
-    @DisplayName("회원 삭제 - 실패")
+    @DisplayName("회원 삭제 - 성공")
     @Test
     void removeSuccessTest() {
         String email = "user1@email.com";

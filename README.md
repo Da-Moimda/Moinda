@@ -3,7 +3,7 @@
 Multi Module Project
 
 ```java
-    Api -> Web 
+    moinda-core -> moinda-api 
 ```
 
 ### Tech
@@ -19,9 +19,7 @@ Multi Module Project
 |master|현재 배포중|
 |feature|새로운 기능|
 |hotFix|수정|
-|refactoring|간단한 변경|
 |develope|개발중|
-
 
 ### Dev Issue
 
