@@ -16,7 +16,6 @@ public class GroupCreateDto {
     @NotNull(message = "사용자 번호가 필요합니다.")
     private Long memberId;
 
-
     @NotEmpty(message = "그룹명을 입력해주세요.")
     @Size(min = 1)
     private String name;

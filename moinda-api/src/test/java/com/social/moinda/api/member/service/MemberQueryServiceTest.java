@@ -28,7 +28,7 @@ class MemberQueryServiceTest {
     @DisplayName("사용자 찾기 - 성공")
     @Test
     void successGetMemberInfo() {
-        Member member = new Member("user1@email.com", "user1", "12121212", null);
+        Member member = new Member("user1@email.com", "user1", "12121212");
 
         given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
 

@@ -4,6 +4,8 @@ package com.social.moinda.api.group.service;
 import com.social.moinda.api.group.dto.GroupCreateDto;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupRepository;
+import com.social.moinda.core.domains.groupmember.entity.GroupMember;
+import com.social.moinda.core.domains.groupmember.entity.GroupMemberRepository;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -32,10 +34,13 @@ class GroupCommandServiceTests {
     @Mock
     private GroupRepository groupRepository;
 
+    @Mock
+    private GroupMemberRepository groupMemberRepository;
+
     @InjectMocks
     private GroupCommandService groupCommandService;
 
-    @DisplayName("모임 생성하기 - 성공")
+    @DisplayName("그룹 생성하기 - 성공")
     @Test
     void createSuccessTest() {
         // 그룹이름, 소개, 위치, 모임주제, 정원
@@ -50,19 +55,22 @@ class GroupCommandServiceTests {
         );
 
         Group group = groupCreateDto.bindToEntity();
-        Member member = new Member("dssd@dsds.com","dsds","1212", group);
+        Member member = new Member("dssd@dsds.com","dsds","1212");
+        GroupMember groupMember = new GroupMember(group, member);
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
-        given(memberRepository.save(any(Member.class))).willReturn(member);
+        given(groupRepository.existsByName(anyString())).willReturn(false);
+        given(groupMemberRepository.save(any(GroupMember.class))).willReturn(groupMember);
 
         groupCommandService.create(groupCreateDto);
 
         then(memberRepository).should(times(1)).findById(anyLong());
-        then(memberRepository).should(times(1)).save(any(Member.class));
+        then(groupRepository).should(times(1)).existsByName(anyString());
+        then(groupMemberRepository).should(times(1)).save(any(GroupMember.class));
         assertThatNoException();
     }
 
-    @DisplayName("모임 생성 (사용자가 없어서 실패한다.) - 실패")
+    @DisplayName("그룹 생성 (사용자가 없어서 실패한다.) - 실패")
     @Test
     void createFailTest() {
         // 그룹이름, 소개, 위치, 모임주제, 정원
@@ -86,11 +94,39 @@ class GroupCommandServiceTests {
         then(groupRepository).shouldHaveNoMoreInteractions();
     }
 
+    @DisplayName("그룹명이 중복되어 생성에 실패한다. - 실패")
+    @Test
+    void createFailBecauseOfNameExistTest() {
+        // 그룹이름, 소개, 위치, 모임주제, 정원
+        GroupCreateDto groupCreateDto = new GroupCreateDto(
+                1L,
+                "모임입니다!!",
+                "소개글입니다.",
+                "경기도",
+                "부천시",
+                "FREE",
+                300
+        );
+
+        Member member = new Member("dssd@dsds.com","dsds","1212");
+
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        given(groupRepository.existsByName(anyString()))
+                .willThrow(new IllegalStateException("존재하는 그룹명입니다.."));
+
+        assertThatThrownBy(() -> groupCommandService.create(groupCreateDto))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("존재하는 그룹명입니다..");
+
+        then(memberRepository).shouldHaveNoMoreInteractions();
+        then(groupRepository).shouldHaveNoMoreInteractions();
+    }
+
     @DisplayName("그룹 해체하기 - 성공")
     @Test
     void removeGroupSuccessTest() {
 
-        Member member = new Member("user1@eamil.com", "user1", "12121212", null);
+        Member member = new Member("user1@eamil.com", "user1", "12121212");
 
         doNothing().when(groupRepository).deleteById(anyLong());
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));

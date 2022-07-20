@@ -2,10 +2,7 @@ package com.social.moinda.api.member.dto;
 
 
 import com.social.moinda.core.domains.member.entity.Member;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -15,8 +12,12 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
+@ToString
 public class MemberCreateDto {
 
+    /*
+        TODO : to write Validate Message
+     */
     @Email
     private String email;
 
@@ -37,8 +38,7 @@ public class MemberCreateDto {
         return new Member(
                 this.email,
                 this.name,
-                this.password,
-                null
+                this.password
         );
     }
 }

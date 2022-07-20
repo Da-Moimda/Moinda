@@ -19,7 +19,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 
-@ExtendWith(MockitoExtension.class) // Mockito
+@ExtendWith(MockitoExtension.class)
 class MemberCommandServiceTests {
 
     @Mock
@@ -30,17 +30,17 @@ class MemberCommandServiceTests {
 
     @DisplayName("회원 등록 - 성공")
     @Test
-    void createSuccessTest1() {
+    void createSuccessTest() {
         // Given
         MemberCreateDto createDto = new MemberCreateDto("user1@email.com", "user1", "12121212", "12121212");
 
         Member member = createDto.bindEntity();
-        given(memberRepository.existByEmail(createDto.getEmail())).willReturn(false);
+        given(memberRepository.existsByEmail(createDto.getEmail())).willReturn(false);
         given(memberRepository.save(any())).willReturn(member);
 
         memberCommandService.create(createDto);
 
-        then(memberRepository).should(times(1)).existByEmail(createDto.getEmail());
+        then(memberRepository).should(times(1)).existsByEmail(createDto.getEmail());
         then(memberRepository).should(times(1)).save(any(Member.class));
     }
 
@@ -50,12 +50,12 @@ class MemberCommandServiceTests {
         MemberCreateDto createDto = new MemberCreateDto("user1@email.com", "user1", "12121212", "12121212");
         Member member = createDto.bindEntity();
 
-        given(memberRepository.existByEmail(anyString())).willReturn(true);
+        given(memberRepository.existsByEmail(anyString())).willReturn(true);
 
         assertThatThrownBy(() -> memberCommandService.create(createDto))
                 .isInstanceOf(IllegalStateException.class);
 
-        then(memberRepository).should(times(1)).existByEmail(createDto.getEmail());
+        then(memberRepository).should(times(1)).existsByEmail(createDto.getEmail());
         then(memberRepository).should(times(0)).save(any(Member.class));
     }
 
