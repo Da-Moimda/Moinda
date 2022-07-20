@@ -1,8 +1,8 @@
 package com.social.moinda.web.member;
 
-import com.social.moinda.api.member.dto.MemberCreateDto;
+import com.social.moinda.api.member.dto.SignupRequest;
 import com.social.moinda.api.member.service.MemberCommandService;
-import com.social.moinda.core.domains.member.dto.MemberDto;
+import com.social.moinda.core.domains.member.dto.SignupResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +20,11 @@ public class MemberApiController {
     private final MemberCommandService memberCommandService;
 
     @PostMapping("")
-    public ResponseEntity<MemberDto> signup(@RequestBody @Validated MemberCreateDto dto) {
+    public ResponseEntity<SignupResponse> signup(@RequestBody @Validated SignupRequest dto) {
 
-        MemberDto memberDto = memberCommandService.create(dto);
+        SignupResponse SignupResponse = memberCommandService.create(dto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(memberDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(SignupResponse);
     }
 
 }

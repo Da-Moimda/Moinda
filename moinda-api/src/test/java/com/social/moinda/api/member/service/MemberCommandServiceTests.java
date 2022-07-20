@@ -1,6 +1,6 @@
 package com.social.moinda.api.member.service;
 
-import com.social.moinda.api.member.dto.MemberCreateDto;
+import com.social.moinda.api.member.dto.SignupRequest;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ class MemberCommandServiceTests {
     @Test
     void createSuccessTest() {
         // Given
-        MemberCreateDto createDto = new MemberCreateDto("user1@email.com", "user1", "12121212", "12121212");
+        SignupRequest createDto = new SignupRequest("user1@email.com", "user1", "12121212", "12121212");
 
         Member member = createDto.bindEntity();
         given(memberRepository.existsByEmail(createDto.getEmail())).willReturn(false);
@@ -47,7 +47,7 @@ class MemberCommandServiceTests {
     @DisplayName("회원 등록시 이미 사용자가 등록되어있다. - 실패")
     @Test
     void createFailTest() {
-        MemberCreateDto createDto = new MemberCreateDto("user1@email.com", "user1", "12121212", "12121212");
+        SignupRequest createDto = new SignupRequest("user1@email.com", "user1", "12121212", "12121212");
         Member member = createDto.bindEntity();
 
         given(memberRepository.existsByEmail(anyString())).willReturn(true);

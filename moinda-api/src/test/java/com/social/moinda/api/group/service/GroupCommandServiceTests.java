@@ -55,7 +55,7 @@ class GroupCommandServiceTests {
         );
 
         Group group = groupCreateDto.bindToEntity();
-        Member member = new Member("dssd@dsds.com","dsds","1212");
+        Member member = new Member("dssd@dsds.com","dsds","1212", null);
         GroupMember groupMember = new GroupMember(group, member);
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
@@ -108,7 +108,7 @@ class GroupCommandServiceTests {
                 300
         );
 
-        Member member = new Member("dssd@dsds.com","dsds","1212");
+        Member member = new Member("dssd@dsds.com","dsds","1212", null);
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
         given(groupRepository.existsByName(anyString()))
@@ -126,7 +126,7 @@ class GroupCommandServiceTests {
     @Test
     void removeGroupSuccessTest() {
 
-        Member member = new Member("user1@eamil.com", "user1", "12121212");
+        Member member = new Member("user1@eamil.com", "user1", "12121212", null);
 
         doNothing().when(groupRepository).deleteById(anyLong());
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
