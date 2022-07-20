@@ -2,12 +2,11 @@ package com.social.moinda.core.domains.member.entity;
 
 
 import com.social.moinda.core.BaseEntity;
+import com.social.moinda.core.domains.meeting.Meeting;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import lombok.*;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 /*
     ArgumentResolver + @AuthenticationPrincipal , Filter 를 사용해서
@@ -30,7 +29,15 @@ public class Member extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    // TODO : CreateResponse 클래스로 변경해서 사용하기
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "meeting_id", nullable = true)
+    private Meeting meeting;
+
+    /**
+     * 2022.7.20 19:53
+     * MemberCreateResponse로 변경필요,
+     * 지금은 사용자 생성 후 반환값으로 사용중.
+     */
     public MemberDto bindToMemberDto() {
         return new MemberDto(
                 this.getId(),
