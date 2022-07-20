@@ -4,6 +4,7 @@ package com.social.moinda.core.domains.member.entity;
 import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.meeting.Meeting;
 import com.social.moinda.core.domains.member.dto.MemberDto;
+import com.social.moinda.core.domains.member.dto.SignupResponse;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,13 +34,16 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "meeting_id", nullable = true)
     private Meeting meeting;
 
-    /**
-     * 2022.7.20 19:53
-     * MemberCreateResponse로 변경필요,
-     * 지금은 사용자 생성 후 반환값으로 사용중.
-     */
     public MemberDto bindToMemberDto() {
         return new MemberDto(
+                this.getId(),
+                this.email,
+                this.name
+        );
+    }
+
+    public SignupResponse bindToSignupResponse() {
+        return new SignupResponse(
                 this.getId(),
                 this.email,
                 this.name,

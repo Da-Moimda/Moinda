@@ -1,6 +1,6 @@
 package com.social.moinda.web.member;
 
-import com.social.moinda.api.member.dto.MemberCreateDto;
+import com.social.moinda.api.member.dto.SignupRequest;
 import com.social.moinda.api.member.service.MemberCommandService;
 import com.social.moinda.web.BaseApiConfig;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +25,7 @@ class MemberApiControllerTest extends BaseApiConfig {
     @Test
     void signupSuccessTest() throws Exception {
 
-        MemberCreateDto createDto = new MemberCreateDto("user1@email.com", "하하", "12121212", "12121212");
+        SignupRequest createDto = new SignupRequest("user1@email.com", "하하", "12121212", "12121212");
 
         mockMvc.perform(post(MEMBER_API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -39,7 +39,7 @@ class MemberApiControllerTest extends BaseApiConfig {
     @Test
     void signupFailTest() throws Exception {
 
-        MemberCreateDto createDto = new MemberCreateDto("user1@email.com", "user", "1212", "1212");
+        SignupRequest createDto = new SignupRequest("user1@email.com", "user", "1212", "1212");
 
         mockMvc.perform(post(MEMBER_API_URL)
                 .contentType(MediaType.APPLICATION_JSON)

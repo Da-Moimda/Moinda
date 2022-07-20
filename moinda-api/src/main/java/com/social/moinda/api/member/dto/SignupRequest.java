@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Getter
 @ToString
-public class MemberCreateDto {
+public class SignupRequest {
 
     /*
         TODO : to write Validate Message
