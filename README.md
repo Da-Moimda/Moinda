@@ -6,20 +6,30 @@ Multi Module Project
     moinda-core -> moinda-api 
 ```
 
+---
+
 ### Tech
 - Java 
 - Spring Boot 2.7.1
 - Spring Data JPA
 - Unit Test
 
+---
+
+### Architecture (사진 구조 예정)
+
+---
+
 ### Branch Flow
 
-|브랜치명|용도|
-|---|---|
-|master|현재 배포중|
-|feature|새로운 기능|
-|hotFix|수정|
-|develope|개발중|
+| 브랜치명     |용도|
+|----------|---|
+| master   |현재 배포중|
+| feature  |새로운 기능|
+| hotfix   |수정|
+| develope |개발중|
+
+---
 
 ### Dev Issue
 

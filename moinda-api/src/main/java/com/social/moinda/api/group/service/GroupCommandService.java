@@ -25,7 +25,6 @@ public class GroupCommandService {
         Group group = groupCreateDto.bindToEntity();
 
         member.setGroup(group);
-        //TODO : Member에서 영속성전이로 MemberRepository에서 Save하는 것으로 바꾸기. -> Test Code 변경필요.
         memberRepository.save(member);
 
         GroupCreateResponse groupCreateResponse = group.bindToCreateResponse(member.bindToMemberDto());

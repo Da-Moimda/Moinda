@@ -3,10 +3,9 @@ package com.social.moinda.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest
+
 public class BaseApiConfig {
 
     @Autowired
@@ -15,7 +14,11 @@ public class BaseApiConfig {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /*
+         TODO : 다른곳에서 관리하게 변경할 것
+     */
     protected static final String MEMBER_API_URL = "/api/member";
+    protected static final String GROUP_API_URL = "/api/group";
 
     protected String toJson(Object obj) {
         try {
