@@ -25,14 +25,13 @@ public class MemberCommandService {
         return savedEntity.bindToMemberDto();
     }
 
-
     public boolean remove(String email) {
        return memberRepository.deleteByEmail(email);
     }
 
     @Transactional(readOnly = true)
     public void isExistMember(MemberCreateDto dto) {
-        if (memberRepository.existByEmail(dto.getEmail())) {
+        if(memberRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalStateException("존재하는 이메일입니다.");
         }
     }
