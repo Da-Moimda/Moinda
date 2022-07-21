@@ -2,21 +2,9 @@
 
 Multi Module Project
 
-```java
-    moinda-core -> moinda-api 
-```
+### Architecture & Introduce
 
----
-
-### Tech
-- Java 
-- Spring Boot 2.7.1
-- Spring Data JPA
-- Unit Test
-
----
-
-### Architecture (사진 구조 예정)
+[Moinda - Notion](https://jumpy-cylinder-eb2.notion.site/Moinda-6eb1c833b4a747428974cda7c8755ee5)
 
 ---
 
@@ -28,9 +16,3 @@ Multi Module Project
 | feature  |새로운 기능|
 | hotfix   |수정|
 | develope |개발중|
-
----
-
-### Dev Issue
-
-#### 1.  [No bean named 'entityManagerFactory' available](https://awse2050.tistory.com/110)
