@@ -18,4 +18,5 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query("select g.id, g.name, g.concern, g.location, count(m) as userNum from Group g join Member m where g.id = m.id AND g.name like concat('%', :search, '%') ")
     public List<GroupDto> findAllByNameContains(String search);
 
+    boolean existsByName(String name);
 }

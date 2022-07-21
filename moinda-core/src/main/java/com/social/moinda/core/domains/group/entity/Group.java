@@ -15,6 +15,7 @@ import javax.persistence.*;
 @AttributeOverride(name = "id", column = @Column(name = "group_id"))
 @Table(name = "groups")
 @Entity
+@ToString
 public class Group extends BaseEntity {
 
     @Column(name = "group_name", nullable = false, length = 30, unique = true)

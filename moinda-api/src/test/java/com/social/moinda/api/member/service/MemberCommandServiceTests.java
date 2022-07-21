@@ -1,6 +1,6 @@
 package com.social.moinda.api.member.service;
 
-import com.social.moinda.api.member.dto.MemberCreateDto;
+import com.social.moinda.api.member.dto.SignupRequest;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,7 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 
-@ExtendWith(MockitoExtension.class) // Mockito
+@ExtendWith(MockitoExtension.class)
 class MemberCommandServiceTests {
 
     @Mock
@@ -30,32 +30,32 @@ class MemberCommandServiceTests {
 
     @DisplayName("회원 등록 - 성공")
     @Test
-    void createSuccessTest1() {
+    void createSuccessTest() {
         // Given
-        MemberCreateDto createDto = new MemberCreateDto("user1@email.com", "user1", "12121212", "12121212");
+        SignupRequest createDto = new SignupRequest("user1@email.com", "user1", "12121212", "12121212");
 
         Member member = createDto.bindEntity();
-        given(memberRepository.existByEmail(createDto.getEmail())).willReturn(false);
+        given(memberRepository.existsByEmail(createDto.getEmail())).willReturn(false);
         given(memberRepository.save(any())).willReturn(member);
 
         memberCommandService.create(createDto);
 
-        then(memberRepository).should(times(1)).existByEmail(createDto.getEmail());
+        then(memberRepository).should(times(1)).existsByEmail(createDto.getEmail());
         then(memberRepository).should(times(1)).save(any(Member.class));
     }
 
     @DisplayName("회원 등록시 이미 사용자가 등록되어있다. - 실패")
     @Test
     void createFailTest() {
-        MemberCreateDto createDto = new MemberCreateDto("user1@email.com", "user1", "12121212", "12121212");
+        SignupRequest createDto = new SignupRequest("user1@email.com", "user1", "12121212", "12121212");
         Member member = createDto.bindEntity();
 
-        given(memberRepository.existByEmail(anyString())).willReturn(true);
+        given(memberRepository.existsByEmail(anyString())).willReturn(true);
 
         assertThatThrownBy(() -> memberCommandService.create(createDto))
                 .isInstanceOf(IllegalStateException.class);
 
-        then(memberRepository).should(times(1)).existByEmail(createDto.getEmail());
+        then(memberRepository).should(times(1)).existsByEmail(createDto.getEmail());
         then(memberRepository).should(times(0)).save(any(Member.class));
     }
 

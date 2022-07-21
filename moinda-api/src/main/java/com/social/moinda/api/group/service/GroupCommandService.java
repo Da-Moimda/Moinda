@@ -4,6 +4,8 @@ import com.social.moinda.api.group.dto.GroupCreateDto;
 import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupRepository;
+import com.social.moinda.core.domains.groupmember.entity.GroupMember;
+import com.social.moinda.core.domains.groupmember.entity.GroupMemberRepository;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,32 +19,47 @@ public class GroupCommandService {
 
     private final GroupRepository groupRepository;
     private final MemberRepository memberRepository;
+    private final GroupMemberRepository groupMemberRepository;
 
     public GroupCreateResponse create(GroupCreateDto groupCreateDto) {
         // TODO : Service 를 가져오는 것으로 변경 ?? , 예외코드 커스텀 필요
-        Member member = findMember(groupCreateDto.getMemberId());
+        Member member = existMember(groupCreateDto.getMemberId());
+        
+        existByGroupName(groupCreateDto.getName());
 
         Group group = groupCreateDto.bindToEntity();
+        GroupMember groupMember = new GroupMember(group, member);
 
-        member.setGroup(group);
-        memberRepository.save(member);
+        groupMemberRepository.save(groupMember);
 
         GroupCreateResponse groupCreateResponse = group.bindToCreateResponse(member.bindToMemberDto());
         return groupCreateResponse;
     }
 
+    /*
+    TODO : 양방향 매핑으로 변경시 로직수정 필요
+ */
+    public void remove(Long groupId, Long memberId) {
+        existMember(memberId);
+        groupRepository.deleteById(groupId); // TODO : 추가적인 select 쿼리발생 -> 벌크성 쿼리로 변경
+    }
+
+    /*
+        TODO : Service 계층으로 ?, Exception 커스텀 필요
+     */
     @Transactional(readOnly = true)
-    public Member findMember(Long memberId) {
+    public Member existMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalStateException("없는 사용자입니다."));
     }
 
     /*
-        TODO : 양방향 매핑으로 변경시 로직수정 필요
+        TODO : Service 계층으로 ?, Exception 커스텀 필요
      */
-    public void remove(Long groupId, Long memberId) {
-        Member member = findMember(memberId);
-        groupRepository.deleteById(groupId); // TODO : 추가적인 select 쿼리발생 -> 벌크성 쿼리로 변경
-        member.setGroup(null);
+    @Transactional(readOnly = true)
+    public void existByGroupName(String groupName) {
+        if(groupRepository.existsByName(groupName)) {
+            throw new IllegalStateException("존재하는 그룹명입니다.");
+        }
     }
 }
