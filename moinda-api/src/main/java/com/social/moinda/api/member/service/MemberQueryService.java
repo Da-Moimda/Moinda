@@ -1,6 +1,7 @@
 package com.social.moinda.api.member.service;
 
 
+import com.social.moinda.api.member.exception.NotFoundMemberException;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
@@ -17,7 +18,7 @@ public class MemberQueryService {
 
     public MemberDto getMemberInfo(String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("없는 이메일 입니다."));
+                .orElseThrow(NotFoundMemberException::new);
 
         return member.bindToMemberDto();
     }
