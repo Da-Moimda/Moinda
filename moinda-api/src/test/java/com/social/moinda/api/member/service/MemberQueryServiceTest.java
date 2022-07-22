@@ -1,5 +1,6 @@
 package com.social.moinda.api.member.service;
 
+import com.social.moinda.api.member.exception.NotFoundMemberException;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -11,10 +12,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class MemberQueryServiceTest {
@@ -34,7 +35,7 @@ class MemberQueryServiceTest {
 
         memberQueryService.getMemberInfo(member.getEmail());
 
-        assertDoesNotThrow(() -> IllegalArgumentException.class);
+        assertDoesNotThrow(() -> NotFoundMemberException.class);
     }
 
     @DisplayName("사용자 찾기 - 실패")
@@ -42,9 +43,11 @@ class MemberQueryServiceTest {
     void failGetMemberInfo() {
         String email = "user1@email.com";
 
-        given(memberRepository.findByEmail(email)).willThrow(IllegalStateException.class);
+        given(memberRepository.findByEmail(email)).willThrow(new NotFoundMemberException());
 
-        assertThatThrownBy(() -> memberQueryService.getMemberInfo(email));
+        assertThatThrownBy(() -> memberQueryService.getMemberInfo(email))
+                .isInstanceOf(NotFoundMemberException.class)
+                .hasMessageContaining("등록되지 않은 사용자 입니다.");
 
     }
 }

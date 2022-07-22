@@ -1,6 +1,7 @@
 package com.social.moinda.api.member.service;
 
 import com.social.moinda.api.member.dto.SignupRequest;
+import com.social.moinda.api.member.exception.RegisteredEmailException;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +54,7 @@ class MemberCommandServiceTests {
         given(memberRepository.existsByEmail(anyString())).willReturn(true);
 
         assertThatThrownBy(() -> memberCommandService.create(createDto))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(RegisteredEmailException.class);
 
         then(memberRepository).should(times(1)).existsByEmail(createDto.getEmail());
         then(memberRepository).should(times(0)).save(any(Member.class));

@@ -1,6 +1,7 @@
 package com.social.moinda.api.member.service;
 
 import com.social.moinda.api.member.dto.SignupRequest;
+import com.social.moinda.api.member.exception.RegisteredEmailException;
 import com.social.moinda.core.domains.member.dto.SignupResponse;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
@@ -32,7 +33,7 @@ public class MemberCommandService {
     @Transactional(readOnly = true)
     public void isExistMember(SignupRequest dto) {
         if(memberRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalStateException("존재하는 이메일입니다.");
+            throw new RegisteredEmailException();
         }
     }
 }
