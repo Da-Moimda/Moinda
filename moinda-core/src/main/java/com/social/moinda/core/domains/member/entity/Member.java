@@ -2,12 +2,15 @@ package com.social.moinda.core.domains.member.entity;
 
 
 import com.social.moinda.core.BaseEntity;
+import com.social.moinda.core.domains.groupmember.entity.GroupMember;
 import com.social.moinda.core.domains.meeting.entity.Meeting;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import com.social.moinda.core.domains.member.dto.SignupResponse;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
     ArgumentResolver + @AuthenticationPrincipal , Filter 를 사용해서
@@ -18,7 +21,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @AttributeOverride(name = "id", column = @Column(name = "member_id"))
 @Entity
-@ToString
+@ToString(exclude = {"meeting", "groupMember"})
 public class Member extends BaseEntity {
 
     @Column(name = "email", nullable = false, unique = true)
@@ -33,6 +36,17 @@ public class Member extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id", nullable = true)
     private Meeting meeting;
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    private List<GroupMember> groupMember = new ArrayList<>();
+
+    public Member(String email, String name, String password, Meeting meeting) {
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        // TODO : Meeting을 안받고 null로 바꾸기,
+        this.meeting = meeting;
+    }
 
     public MemberDto bindToMemberDto() {
         return new MemberDto(
