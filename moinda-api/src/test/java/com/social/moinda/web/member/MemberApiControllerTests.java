@@ -2,24 +2,35 @@ package com.social.moinda.web.member;
 
 import com.social.moinda.api.member.dto.SignupRequest;
 import com.social.moinda.api.member.service.MemberCommandService;
+import com.social.moinda.api.member.service.MemberQueryService;
+import com.social.moinda.core.domains.member.dto.MemberDto;
 import com.social.moinda.web.BaseApiConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(value = MemberApiController.class)
-class MemberApiControllerTest extends BaseApiConfig {
+class MemberApiControllerTests extends BaseApiConfig {
 
     @MockBean
     private MemberCommandService memberCommandService;
+
+    @MockBean
+    private MemberQueryService memberQueryService;
 
     @DisplayName("회원가입 성공 테스트")
     @Test
@@ -44,15 +55,24 @@ class MemberApiControllerTest extends BaseApiConfig {
         mockMvc.perform(post(MEMBER_API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(createDto)))
-                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andExpect(status().is4xxClientError())
                 .andExpect(result -> {
                     result.getResolvedException().getClass().isAssignableFrom(MethodArgumentNotValidException.class);
                 });
     }
 
-    @DisplayName("회원가입 실패 테스트 - 비밀번호 불일치")
+    @DisplayName("사용자와 가입한 그룹을 함께 조회하여 성공한다.")
     @Test
-    void signupFailNotEqualsPasswordTest() throws Exception {
+    void getMemberAllSuccessTest() throws Exception {
 
+        List<MemberDto> members = List.of(new MemberDto(1L,"user123@email.com", "user1"),
+                new MemberDto(1L,"user123@email.com", "user1"));
+
+        given(memberQueryService.getMemberWithGroupInfo(Mockito.anyLong())).willReturn(members);
+
+        ResultActions perform = mockMvc.perform(get(MEMBER_API_URL + "/" + 1L));
+
+        perform.andExpect(status().isOk())
+                .andExpect(content().json(toJson(members)));
     }
 }
