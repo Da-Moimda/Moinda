@@ -1,4 +1,4 @@
-package com.social.moinda.core.domains.meeting;
+package com.social.moinda.core.domains.meeting.entity;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

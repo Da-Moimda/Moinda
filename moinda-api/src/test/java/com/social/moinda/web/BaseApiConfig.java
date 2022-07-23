@@ -19,6 +19,7 @@ public class BaseApiConfig {
      */
     protected static final String MEMBER_API_URL = "/api/member";
     protected static final String GROUP_API_URL = "/api/group";
+    protected static final String MEETING_API_URL = "/api/meeting";
 
     protected String toJson(Object obj) {
         try {
