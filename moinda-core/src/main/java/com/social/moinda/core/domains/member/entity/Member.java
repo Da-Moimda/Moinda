@@ -2,7 +2,7 @@ package com.social.moinda.core.domains.member.entity;
 
 
 import com.social.moinda.core.BaseEntity;
-import com.social.moinda.core.domains.meeting.Meeting;
+import com.social.moinda.core.domains.meeting.entity.Meeting;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import com.social.moinda.core.domains.member.dto.SignupResponse;
 import lombok.*;
