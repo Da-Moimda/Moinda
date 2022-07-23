@@ -18,13 +18,6 @@ public class MeetingCommandService {
     private final MeetingRepository meetingRepository;
     private final GroupRepository groupRepository;
 
-    public Meeting create(Meeting meeting) {
-
-        Meeting entity = meetingRepository.save(meeting);
-
-        return entity;
-    }
-
     public MeetingCreateResponse create(MeetingCreateDto meetingCreateDto) {
 
         Group group = existGroup(meetingCreateDto.getGroupId());
