@@ -19,7 +19,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -115,8 +114,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
         ResultActions perform = mockMvc.perform(get(GROUP_API_URL));
 
         perform.andExpect(status().is2xxSuccessful())
-                .andExpect(content().json(toJson(dtoList)))
-                .andDo(print());
+                .andExpect(content().json(toJson(dtoList)));
     }
 
     @DisplayName("특정한 그룹명 검색 및 조회를 성공한다.")
@@ -133,8 +131,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
         ResultActions perform = mockMvc.perform(get(GROUP_API_URL+"/"+"부천"));
 
         perform.andExpect(status().is2xxSuccessful())
-                .andExpect(content().json(toJson(dtoList)))
-                .andDo(print());
+                .andExpect(content().json(toJson(dtoList)));
     }
 
     private ResultActions getCreateResultActions(GroupCreateDto groupCreateDto) throws Exception {
