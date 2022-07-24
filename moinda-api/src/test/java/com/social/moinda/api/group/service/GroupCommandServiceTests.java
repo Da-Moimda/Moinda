@@ -2,6 +2,8 @@ package com.social.moinda.api.group.service;
 
 
 import com.social.moinda.api.group.dto.GroupCreateDto;
+import com.social.moinda.api.group.exception.RegisteredGroupNameException;
+import com.social.moinda.api.member.exception.NotFoundMemberException;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupRepository;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
@@ -84,11 +86,11 @@ class GroupCommandServiceTests {
                 300
         );
 
-        given(memberRepository.findById(anyLong())).willThrow(new IllegalStateException("없는 사용자입니다."));
+        given(memberRepository.findById(anyLong())).willThrow(new NotFoundMemberException());
 
         assertThatThrownBy(() -> groupCommandService.create(groupCreateDto))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("없는 사용자입니다.");
+                .isInstanceOf(NotFoundMemberException.class)
+                .hasMessageContaining("등록되지 않은 사용자 입니다.");
 
         then(memberRepository).shouldHaveNoMoreInteractions();
         then(groupRepository).shouldHaveNoMoreInteractions();
@@ -112,11 +114,11 @@ class GroupCommandServiceTests {
 
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
         given(groupRepository.existsByName(anyString()))
-                .willThrow(new IllegalStateException("존재하는 그룹명입니다.."));
+                .willThrow(new RegisteredGroupNameException());
 
         assertThatThrownBy(() -> groupCommandService.create(groupCreateDto))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("존재하는 그룹명입니다..");
+                .isInstanceOf(RegisteredGroupNameException.class)
+                .hasMessageContaining("등록된 그룹명 입니다.");
 
         then(memberRepository).shouldHaveNoMoreInteractions();
         then(groupRepository).shouldHaveNoMoreInteractions();

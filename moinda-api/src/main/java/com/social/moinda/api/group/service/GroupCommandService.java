@@ -1,6 +1,8 @@
 package com.social.moinda.api.group.service;
 
 import com.social.moinda.api.group.dto.GroupCreateDto;
+import com.social.moinda.api.group.exception.RegisteredGroupNameException;
+import com.social.moinda.api.member.exception.NotFoundMemberException;
 import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupRepository;
@@ -44,22 +46,16 @@ public class GroupCommandService {
         groupRepository.deleteById(groupId); // TODO : 추가적인 select 쿼리발생 -> 벌크성 쿼리로 변경
     }
 
-    /*
-        TODO : Service 계층으로 ?, Exception 커스텀 필요
-     */
     @Transactional(readOnly = true)
     public Member existMember(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalStateException("없는 사용자입니다."));
+                .orElseThrow(NotFoundMemberException::new);
     }
 
-    /*
-        TODO : Service 계층으로 ?, Exception 커스텀 필요
-     */
     @Transactional(readOnly = true)
     public void existByGroupName(String groupName) {
         if(groupRepository.existsByName(groupName)) {
-            throw new IllegalStateException("존재하는 그룹명입니다.");
+            throw new RegisteredGroupNameException();
         }
     }
 }

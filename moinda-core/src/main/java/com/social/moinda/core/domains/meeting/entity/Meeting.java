@@ -1,11 +1,11 @@
-package com.social.moinda.core.domains.meeting;
+package com.social.moinda.core.domains.meeting.entity;
 
 import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.group.entity.Group;
+import com.social.moinda.core.domains.meeting.dto.MeetingCreateResponse;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "meeting_id"))
 @Entity
-@ToString
+//@ToString
 public class Meeting extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
@@ -41,5 +41,14 @@ public class Meeting extends BaseEntity {
         this.meetingLocation = meetingLocation;
         this.amount = amount;
         this.meetingDate = meetingDate;
+    }
+
+    public MeetingCreateResponse bindToCreateResponse() {
+        return new MeetingCreateResponse(
+                this.getId(),
+                this.meetingLocation,
+                this.amount,
+                this.meetingDate
+        );
     }
 }

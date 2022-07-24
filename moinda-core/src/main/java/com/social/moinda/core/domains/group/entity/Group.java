@@ -2,6 +2,7 @@ package com.social.moinda.core.domains.group.entity;
 
 import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
+import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -38,7 +39,6 @@ public class Group extends BaseEntity {
     })
     private GroupLocation location;
 
-    // TODO : fix to @AllArgsConstructor
     public Group(String name,
                  String introduce,
                  GroupLocation location,
@@ -61,6 +61,16 @@ public class Group extends BaseEntity {
                 this.concern.name(),
                 this.capacity,
                 memberDto
+        );
+    }
+
+    public GroupDto bindToGroupDto() {
+        return new GroupDto(
+                this.getId(),
+                this.name,
+                this.location.getLocationSi(),
+                this.concern.name(),
+                this.capacity
         );
     }
 
