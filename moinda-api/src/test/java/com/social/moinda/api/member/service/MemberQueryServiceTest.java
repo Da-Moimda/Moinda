@@ -1,7 +1,8 @@
 package com.social.moinda.api.member.service;
 
 import com.social.moinda.api.member.exception.NotFoundMemberException;
-import com.social.moinda.core.domains.member.dto.MemberDto;
+import com.social.moinda.core.domains.group.dto.GroupDto;
+import com.social.moinda.core.domains.member.dto.MemberDetails;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberQueryRepository;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
@@ -64,15 +65,17 @@ class MemberQueryServiceTest {
     @Test
     void successGetMemberAndGroupInfo() {
 
-        List<MemberDto> members = List.of(new MemberDto(1L,"user123@email.com", "user1"),
-                new MemberDto(2L,"user12@email.com", "user2"),
-                new MemberDto(3L,"user13@email.com", "user3"));
+        MemberDetails memberDetails = new MemberDetails(1L, List.of(
+                new GroupDto(1L, "그룹1", "부천시", "FREE", 20),
+                new GroupDto(2L, "그룹2", "시흥시", "STUDY", 30),
+                new GroupDto(3L, "그룹3", "마포구", "FREE", 11)
+        ));
 
-        given(memberQueryRepository.findMemberWithRegisteredGroups(anyLong())).willReturn(members);
+        given(memberQueryRepository.findMemberDetails(anyLong())).willReturn(memberDetails);
 
         memberQueryService.getMemberWithGroupInfo(1L);
 
-        then(memberQueryRepository).should(times(1)).findMemberWithRegisteredGroups(anyLong());
+        then(memberQueryRepository).should(times(1)).findMemberDetails(anyLong());
 
     }
 }

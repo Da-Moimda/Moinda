@@ -2,6 +2,8 @@ package com.social.moinda.core.domains.member.entity;
 
 
 import com.social.moinda.core.BaseEntity;
+import com.social.moinda.core.domains.group.dto.GroupDto;
+import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
 import com.social.moinda.core.domains.meeting.entity.Meeting;
 import com.social.moinda.core.domains.member.dto.MemberDto;
@@ -11,6 +13,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
     ArgumentResolver + @AuthenticationPrincipal , Filter 를 사용해서
@@ -63,5 +66,12 @@ public class Member extends BaseEntity {
                 this.name,
                 this.password
         );
+    }
+
+    public List<GroupDto> bindToGroupDto() {
+        return this.groupMember.stream()
+                .map(GroupMember::getGroup)
+                .map(Group::bindToGroupDto)
+                .collect(Collectors.toList());
     }
 }

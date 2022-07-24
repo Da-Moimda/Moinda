@@ -3,15 +3,13 @@ package com.social.moinda.web.member;
 import com.social.moinda.api.member.dto.SignupRequest;
 import com.social.moinda.api.member.service.MemberCommandService;
 import com.social.moinda.api.member.service.MemberQueryService;
-import com.social.moinda.core.domains.member.dto.MemberDto;
+import com.social.moinda.core.domains.member.dto.MemberDetails;
 import com.social.moinda.core.domains.member.dto.SignupResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,9 +29,9 @@ public class MemberApiController {
 
     // TODO : Test Method, convert memberId to Member(AuthenticationPrincipal)
     @GetMapping("/{memberId}")
-    public ResponseEntity<List<MemberDto>> getMemberAll(@PathVariable Long memberId) {
-        List<MemberDto> memberWithGroupInfo = memberQueryService.getMemberWithGroupInfo(memberId);
+    public ResponseEntity<MemberDetails> getMemberDetails(@PathVariable Long memberId) {
+        MemberDetails memberDetails = memberQueryService.getMemberWithGroupInfo(memberId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(memberWithGroupInfo);
+        return ResponseEntity.status(HttpStatus.OK).body(memberDetails);
     }
 }
