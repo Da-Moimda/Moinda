@@ -2,6 +2,7 @@ package com.social.moinda.api.member.service;
 
 
 import com.social.moinda.api.member.exception.NotFoundMemberException;
+import com.social.moinda.core.domains.member.dto.MemberDetails;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberQueryRepository;
@@ -9,8 +10,6 @@ import com.social.moinda.core.domains.member.entity.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +26,7 @@ public class MemberQueryService {
         return member.bindToMemberDto();
     }
 
-    public List<MemberDto> getMemberWithGroupInfo(Long memberId) {
-
-        List<MemberDto> registeredGroups = memberQueryRepository.findMemberWithRegisteredGroups(memberId);
-
-        return registeredGroups;
+    public MemberDetails getMemberWithGroupInfo(Long memberId) {
+        return memberQueryRepository.findMemberDetails(memberId);
     }
 }
