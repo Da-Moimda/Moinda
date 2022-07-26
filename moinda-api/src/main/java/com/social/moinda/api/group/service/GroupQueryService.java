@@ -28,7 +28,7 @@ public class GroupQueryService {
     }
 
     public List<GroupDto> searchGroups(String search) {
-        List<GroupDto> dtoList = groupRepository.findAllByNameContains(search);
+        List<GroupDto> dtoList = groupQueryRepository.findAllByNameContains(search);
         return dtoList;
     }
 }

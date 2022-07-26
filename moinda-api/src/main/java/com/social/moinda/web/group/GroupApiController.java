@@ -33,6 +33,7 @@ public class GroupApiController {
         return ResponseEntity.status(HttpStatus.OK).body(groups);
     }
 
+    // TODO : Postman 관련 에러가 조금 있는듯한?
     @GetMapping("/{search}")
     public ResponseEntity<List<GroupDto>> getGroups(@PathVariable String search) {
         List<GroupDto> groups = groupQueryService.searchGroups(search);

@@ -36,13 +36,13 @@ public class GroupQueryServiceTests {
                 new GroupDto(1L, "그룹1", "부천시", "FREE", 20),
                 new GroupDto(2L, "그룹2", "시흥시", "STUDY", 30),
                 new GroupDto(3L, "그룹3", "마포구", "FREE", 11)
-                );
+        );
 
-        given(groupRepository.findGroupAll()).willReturn(dtoList);
+        given(groupQueryRepository.findGroupAll()).willReturn(dtoList);
 
         List<GroupDto> resultList = groupQueryService.searchGroups();
 
-        then(groupRepository).should(times(1)).findGroupAll();
+        then(groupQueryRepository).should(times(1)).findGroupAll();
         assertThat(resultList.size()).isEqualTo(dtoList.size());
         assertThatNoException();
     }
@@ -57,28 +57,11 @@ public class GroupQueryServiceTests {
                 new GroupDto(3L, "그룹3", "마포구", "FREE", 11)
         );
 
-        given(groupRepository.findAllByNameContains(anyString())).willReturn(dtoList);
+        given(groupQueryRepository.findAllByNameContains(anyString())).willReturn(dtoList);
 
         groupQueryService.searchGroups(anyString());
 
-        then(groupRepository).should(times(1)).findAllByNameContains(anyString());
-
-    }
-
-    @DisplayName("각 그룹의 정보 전체 조회")
-    @Test
-    void successFindGroupAllTest() {
-        List<GroupDto> dtoList = List.of(
-                new GroupDto(1L, "그룹1", "부천시", "FREE", 20),
-                new GroupDto(2L, "그룹2", "시흥시", "STUDY", 30),
-                new GroupDto(3L, "그룹3", "마포구", "FREE", 11)
-        );
-
-        given(groupQueryRepository.findGroupAll()).willReturn(dtoList);
-
-        groupQueryService.searchGroups();
-
-        then(groupQueryRepository).should(times(1)).findGroupAll();
+        then(groupQueryRepository).should(times(1)).findAllByNameContains(anyString());
 
     }
 }
