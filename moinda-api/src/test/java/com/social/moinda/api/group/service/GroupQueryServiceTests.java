@@ -1,6 +1,7 @@
 package com.social.moinda.api.group.service;
 
 import com.social.moinda.core.domains.group.dto.GroupDto;
+import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
 import com.social.moinda.core.domains.group.entity.GroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,9 @@ public class GroupQueryServiceTests {
 
     @Mock
     private GroupRepository groupRepository;
+
+    @Mock
+    private GroupQueryRepository groupQueryRepository;
 
     @InjectMocks
     private GroupQueryService groupQueryService;
@@ -58,6 +62,23 @@ public class GroupQueryServiceTests {
         groupQueryService.searchGroups(anyString());
 
         then(groupRepository).should(times(1)).findAllByNameContains(anyString());
+
+    }
+
+    @DisplayName("각 그룹의 정보 전체 조회")
+    @Test
+    void successFindGroupAllTest() {
+        List<GroupDto> dtoList = List.of(
+                new GroupDto(1L, "그룹1", "부천시", "FREE", 20),
+                new GroupDto(2L, "그룹2", "시흥시", "STUDY", 30),
+                new GroupDto(3L, "그룹3", "마포구", "FREE", 11)
+        );
+
+        given(groupQueryRepository.findGroupAll()).willReturn(dtoList);
+
+        groupQueryService.searchGroups();
+
+        then(groupQueryRepository).should(times(1)).findGroupAll();
 
     }
 }
