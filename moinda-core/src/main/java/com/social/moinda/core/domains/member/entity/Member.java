@@ -3,6 +3,7 @@ package com.social.moinda.core.domains.member.entity;
 
 import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.group.dto.GroupDto;
+import com.social.moinda.core.domains.group.dto.Groups;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
 import com.social.moinda.core.domains.meeting.entity.Meeting;
@@ -68,10 +69,11 @@ public class Member extends BaseEntity {
         );
     }
 
-    public List<GroupDto> bindToGroupDto() {
-        return this.groupMember.stream()
+    public List<GroupDto> bindToGroupDtoList() {
+        List<Group> groups = this.groupMember.stream()
                 .map(GroupMember::getGroup)
-                .map(Group::bindToGroupDto)
                 .collect(Collectors.toList());
+
+        return new Groups(groups).getGroupDtoList();
     }
 }

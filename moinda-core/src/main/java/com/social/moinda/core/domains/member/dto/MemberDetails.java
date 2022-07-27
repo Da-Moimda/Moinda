@@ -12,8 +12,6 @@ import java.util.List;
 @Getter
 @ToString
 public class MemberDetails {
-    // memberId 와 group목록을 갖는 DTO를 하나 만든다.
-    // TODO : findMemberWithRegisteredGroups 를 써서 전달시 쓰는중.
     private Long memberId;
     private List<GroupDto> groups;
 
