@@ -3,6 +3,7 @@ package com.social.moinda.core.domains.group.entity;
 import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
 import com.social.moinda.core.domains.group.dto.GroupDto;
+import com.social.moinda.core.domains.groupmember.entity.GroupMember;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,13 +11,15 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "group_id"))
 @Table(name = "groups")
 @Entity
-@ToString
+@ToString(exclude = "groupMember")
 public class Group extends BaseEntity {
 
     @Column(name = "group_name", nullable = false, length = 30, unique = true)
@@ -38,6 +41,9 @@ public class Group extends BaseEntity {
             @AttributeOverride(name = "locationSi", column = @Column(name = "si", nullable = false))
     })
     private GroupLocation location;
+
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    private List<GroupMember> groupMember = new ArrayList<>();
 
     public Group(String name,
                  String introduce,
