@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  moinda-local-db:
+    container_name: moinda-local-db
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: moinda
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: moinda
+      MYSQL_PASSWORD: moinda
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - moinda-local
+
+networks:
+  moinda-local:
+    driver: bridge
