@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "meeting_id"))
+@Table(name = "TABLE_MEETING")
 @Entity
 //@ToString
 public class Meeting extends BaseEntity {

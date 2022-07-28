@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @AttributeOverride(name = "id", column = @Column(name = "member_id"))
+@Table(name = "TABLE_MEMBER")
 @Entity
 @ToString(exclude = {"meeting", "groupMember"})
 public class Member extends BaseEntity {
