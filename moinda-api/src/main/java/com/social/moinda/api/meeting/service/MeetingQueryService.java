@@ -1,7 +1,7 @@
 package com.social.moinda.api.meeting.service;
 
+import com.social.moinda.api.meeting.exception.NotFoundMeetingException;
 import com.social.moinda.core.domains.meeting.dto.MeetingDetails;
-import com.social.moinda.core.domains.meeting.entity.Meeting;
 import com.social.moinda.core.domains.meeting.entity.MeetingQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,11 +16,9 @@ public class MeetingQueryService {
 
     public MeetingDetails getMeetingDetails(Long meetingId) {
 
-        Meeting meeting = meetingQueryRepository.findMeeting(meetingId)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 모임입니다."));
+        MeetingDetails meetingDetails = meetingQueryRepository.findMeeting(meetingId)
+                .orElseThrow(NotFoundMeetingException::new);
 
-        System.out.println("meeting : " + meeting);
-
-        return null;
+        return meetingDetails;
     }
 }

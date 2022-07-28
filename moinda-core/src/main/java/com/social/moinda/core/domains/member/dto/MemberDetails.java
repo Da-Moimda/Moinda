@@ -12,11 +12,16 @@ import java.util.List;
 @Getter
 @ToString
 public class MemberDetails {
-    private Long memberId;
+
+    /**
+     *  TODO : Member에 자기소개(할말) 추가시 다른 객체를 사용할 것.
+     *      MemberProfile - id, name, introduce, photo
+     */
+    private MemberDto memberDto;
     private List<GroupDto> groups;
 
-    public MemberDetails(Long memberId, List<GroupDto> groups) {
-        this.memberId = memberId;
+    public MemberDetails(MemberDto memberDto, List<GroupDto> groups) {
+        this.memberDto = memberDto;
         this.groups = groups;
     }
 }

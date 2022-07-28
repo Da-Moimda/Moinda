@@ -140,6 +140,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
                 .content(toJson(groupCreateDto)));
     }
 
+    // TODO : 공통으로 뽑아보기
     private void failPerformDueToValidation(ResultActions perform, String expectedMessage) throws Exception {
         perform.andExpect(status().is4xxClientError())
                 .andExpect(result -> {

@@ -3,6 +3,7 @@ package com.social.moinda.core.domains.meetingmember.entity;
 
 import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.meeting.entity.Meeting;
+import com.social.moinda.core.domains.member.dto.MemberDto;
 import com.social.moinda.core.domains.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -30,5 +31,9 @@ public class MeetingMember extends BaseEntity {
     public MeetingMember(Meeting meeting, Member member) {
         this.meeting = meeting;
         this.member = member;
+    }
+
+    public MemberDto convertToMemberDto() {
+        return this.member.bindToMemberDto();
     }
 }

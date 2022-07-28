@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @AttributeOverride(name = "id", column = @Column(name = "member_id"))
 @Table(name = "TABLE_MEMBER")
 @Entity
-@ToString(exclude = {"meeting", "groupMember"})
+@ToString(exclude = {"groupMember"})
 public class Member extends BaseEntity {
 
     @Column(name = "email", nullable = false, unique = true)
@@ -63,6 +63,10 @@ public class Member extends BaseEntity {
         );
     }
 
+    /**
+     *  TODO : mappingToMemberDtoList처럼 변경 필요
+     *
+     */
     public List<GroupDto> bindToGroupDtoList() {
         List<Group> groups = this.groupMember.stream()
                 .map(GroupMember::getGroup)

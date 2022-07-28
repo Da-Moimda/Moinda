@@ -1,6 +1,7 @@
 package com.social.moinda.api.meeting.service;
 
-import com.social.moinda.core.domains.meeting.entity.Meeting;
+import com.social.moinda.api.meeting.exception.NotFoundMeetingException;
+import com.social.moinda.core.domains.meeting.dto.MeetingDetails;
 import com.social.moinda.core.domains.meeting.entity.MeetingQueryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -32,13 +34,28 @@ public class MeetingQueryServiceTests {
 
         Long meetingId = 1L;
 
-        Meeting meeting = new Meeting(null, null, 0, null);
+        MeetingDetails meetingDetails = new MeetingDetails(null, 0, null);
 
-        given(meetingQueryRepository.findMeeting(anyLong())).willReturn(Optional.of(meeting));
+        given(meetingQueryRepository.findMeeting(anyLong()))
+                .willReturn(Optional.of(meetingDetails));
 
         meetingQueryService.getMeetingDetails(meetingId);
 
         then(meetingQueryRepository).should(times(1)).findMeeting(meetingId);
         assertThatNoException();
+    }
+
+    @DisplayName("해당 ID로 조회되지 않아서 모임 조회에 실패한다.")
+    @Test
+    void getMeetingDetailsFailTest() {
+
+        Long memberId = 1L;
+
+        given(meetingQueryRepository.findMeeting(anyLong()))
+                .willThrow(new NotFoundMeetingException());
+
+        assertThatThrownBy(() -> meetingQueryService.getMeetingDetails(memberId))
+                .isInstanceOf(NotFoundMeetingException.class)
+                .hasMessageContaining("존재하지 않는 모임입니다.");
     }
 }

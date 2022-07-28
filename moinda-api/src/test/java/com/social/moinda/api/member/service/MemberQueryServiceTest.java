@@ -64,8 +64,9 @@ class MemberQueryServiceTest {
     @DisplayName("사용자가 가진 그룹정보 같이 가져오기")
     @Test
     void successGetMemberAndGroupInfo() {
+        Member member = new Member("user1@email.com", "user1", "12121212");
 
-        MemberDetails memberDetails = new MemberDetails(1L, List.of(
+        MemberDetails memberDetails = new MemberDetails(member.bindToMemberDto(), List.of(
                 new GroupDto(1L, "그룹1", "부천시", "FREE", 20),
                 new GroupDto(2L, "그룹2", "시흥시", "STUDY", 30),
                 new GroupDto(3L, "그룹3", "마포구", "FREE", 11)

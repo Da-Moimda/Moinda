@@ -7,7 +7,6 @@ import com.social.moinda.core.domains.member.entity.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 
@@ -16,7 +15,6 @@ import javax.persistence.*;
 @AttributeOverride(name = "id", column = @Column(name = "group_member_id"))
 @Table(name = "TABLE_GROUPMEMBER")
 @Entity
-@ToString
 public class GroupMember extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
