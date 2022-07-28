@@ -1,5 +1,6 @@
 package com.social.moinda.api.meeting.service;
 
+import com.social.moinda.api.group.exception.NotFoundGroupException;
 import com.social.moinda.api.meeting.dto.MeetingCreateDto;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupRepository;
@@ -30,6 +31,6 @@ public class MeetingCommandService {
     @Transactional(readOnly = true)
     public Group existGroup(Long groupId) {
         return groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalStateException("없는 그룹입니다."));
+                .orElseThrow(NotFoundGroupException::new);
     }
 }
