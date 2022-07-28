@@ -6,7 +6,6 @@ import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.dto.Groups;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
-import com.social.moinda.core.domains.meeting.entity.Meeting;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import com.social.moinda.core.domains.member.dto.SignupResponse;
 import lombok.*;
@@ -38,19 +37,13 @@ public class Member extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_id", nullable = true)
-    private Meeting meeting;
-
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     private List<GroupMember> groupMember = new ArrayList<>();
 
-    public Member(String email, String name, String password, Meeting meeting) {
+    public Member(String email, String name, String password) {
         this.email = email;
         this.name = name;
         this.password = password;
-        // TODO : Meeting을 안받고 null로 바꾸기,
-        this.meeting = meeting;
     }
 
     public MemberDto bindToMemberDto() {
