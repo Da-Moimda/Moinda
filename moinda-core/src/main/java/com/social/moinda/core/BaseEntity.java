@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Getter
 public class BaseEntity {
 
+    // TODO : 중간테이블에서 ID만 사용하므로 분리 필요
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

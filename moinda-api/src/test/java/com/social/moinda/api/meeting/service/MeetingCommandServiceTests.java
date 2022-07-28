@@ -2,6 +2,7 @@ package com.social.moinda.api.meeting.service;
 
 
 import com.social.moinda.api.group.dto.GroupCreateDto;
+import com.social.moinda.api.group.exception.NotFoundGroupException;
 import com.social.moinda.api.meeting.dto.MeetingCreateDto;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupRepository;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -67,5 +69,26 @@ public class MeetingCommandServiceTests {
 
         then(groupRepository).should(times(1)).findById(anyLong());
         then(meetingRepository).should(times(1)).save(any(Meeting.class));
+    }
+
+    @DisplayName("그룹을 찾을 수 없어서 모임 생성에 실패한다")
+    @Test
+    void createMeetingFailTest() {
+        MeetingCreateDto meetingCreateDto = new MeetingCreateDto(1L,
+                "스타벅스 센트럴",
+                "경기도 부천시 소향로 181",
+                4500,
+                LocalDateTime.of(2022, 7, 31, 2, 30));
+
+        given(groupRepository.findById(anyLong()))
+                .willThrow(new NotFoundGroupException());
+
+        assertThatThrownBy(() -> meetingCommandService.create(meetingCreateDto))
+                .isInstanceOf(NotFoundGroupException.class)
+                .hasMessageContaining("존재하지 않는 그룹입니다.");
+
+        then(groupRepository).should(times(1)).findById(anyLong());
+        then(groupRepository).shouldHaveNoMoreInteractions();
+        then(meetingRepository).shouldHaveNoInteractions();
     }
 }

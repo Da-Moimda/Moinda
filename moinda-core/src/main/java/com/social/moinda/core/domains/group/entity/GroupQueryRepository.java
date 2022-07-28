@@ -31,7 +31,7 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
                 .where(group.id.eq(groupMember.group.id))
                 .groupBy(group.id)
                 .fetch();
-
+    // TODO : Service 계층에서 ?
         Groups groups = new Groups(groupList);
 
         return groups.getGroupDtoList();
@@ -46,6 +46,7 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
                 .groupBy(group.id)
                 .fetch();
 
+        // TODO : Service 계층에서 ?
         Groups groups = new Groups(groupList);
 
         return groups.getGroupDtoList();

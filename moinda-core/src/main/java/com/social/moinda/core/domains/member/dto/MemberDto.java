@@ -1,11 +1,9 @@
 package com.social.moinda.core.domains.member.dto;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class MemberDto {
@@ -14,4 +12,9 @@ public class MemberDto {
     private String email;
     private String name;
 
+    public MemberDto(Long memberId, String email, String name) {
+        this.memberId = memberId;
+        this.email = email;
+        this.name = name;
+    }
 }

@@ -30,6 +30,6 @@ public class MemberQueryRepository extends QuerydslRepositorySupport {
                 .where(member.id.eq(memberId))
                 .fetchFirst();
 
-        return new MemberDetails(memberId,entity.bindToGroupDtoList());
+        return new MemberDetails(entity.bindToMemberDto(),entity.bindToGroupDtoList());
     }
 }
