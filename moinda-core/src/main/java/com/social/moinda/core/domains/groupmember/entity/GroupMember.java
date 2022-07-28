@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "group_member_id"))
+@Table(name = "TABLE_GROUPMEMBER")
 @Entity
 @ToString
 public class GroupMember extends BaseEntity {

@@ -17,8 +17,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(name = "id", column = @Column(name = "group_id"))
-// TODO : 'Groups' 명칭이 Mysql에서 사용이 안됨.
-@Table(name = "community")
+@Table(name = "TABLE_GROUP")
 @Entity
 @ToString(exclude = "groupMember")
 public class Group extends BaseEntity {

@@ -24,7 +24,6 @@ public class GroupCommandService {
     private final GroupMemberRepository groupMemberRepository;
 
     public GroupCreateResponse create(GroupCreateDto groupCreateDto) {
-        // TODO : Service 를 가져오는 것으로 변경 ?? , 예외코드 커스텀 필요
         Member member = existMember(groupCreateDto.getMemberId());
         
         existByGroupName(groupCreateDto.getName());

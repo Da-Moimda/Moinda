@@ -15,9 +15,6 @@ import javax.validation.constraints.Size;
 @ToString
 public class SignupRequest {
 
-    /*
-        TODO : to write Validate Message
-     */
     @Email
     private String email;
 
@@ -29,10 +26,6 @@ public class SignupRequest {
 
     @Size(min = 8)
     private String confirmPassword;
-
-    public boolean isMatchPassword() {
-        return this.password.equals(this.confirmPassword);
-    }
 
     public Member bindEntity() {
         return new Member(

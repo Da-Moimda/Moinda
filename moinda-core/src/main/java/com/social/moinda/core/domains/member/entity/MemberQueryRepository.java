@@ -30,7 +30,6 @@ public class MemberQueryRepository extends QuerydslRepositorySupport {
                 .where(member.id.eq(memberId))
                 .fetchFirst();
 
-        // TODO : 사용자 이름과 이메일을 보여주는 것으로 변경할 경우 bind 메서드로 리팩토링
         return new MemberDetails(memberId,entity.bindToGroupDtoList());
     }
 }
