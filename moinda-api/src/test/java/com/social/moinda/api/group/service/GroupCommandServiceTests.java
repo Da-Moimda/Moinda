@@ -2,13 +2,18 @@ package com.social.moinda.api.group.service;
 
 
 import com.social.moinda.api.group.dto.GroupCreateDto;
+import com.social.moinda.api.group.dto.GroupJoinRequest;
 import com.social.moinda.api.group.exception.RegisteredGroupNameException;
+import com.social.moinda.api.groupmember.exception.AlreadyJoinGroupMemberException;
 import com.social.moinda.api.member.exception.NotFoundMemberException;
 import com.social.moinda.core.domains.group.entity.Group;
+import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
 import com.social.moinda.core.domains.group.entity.GroupRepository;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
+import com.social.moinda.core.domains.groupmember.entity.GroupMemberQueryRepository;
 import com.social.moinda.core.domains.groupmember.entity.GroupMemberRepository;
 import com.social.moinda.core.domains.member.entity.Member;
+import com.social.moinda.core.domains.member.entity.MemberQueryRepository;
 import com.social.moinda.core.domains.member.entity.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,12 +24,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,11 +38,18 @@ class GroupCommandServiceTests {
     private MemberRepository memberRepository;
 
     @Mock
+    private MemberQueryRepository memberQueryRepository;
+
+    @Mock
     private GroupRepository groupRepository;
 
     @Mock
+    private GroupQueryRepository groupQueryRepository;
+    @Mock
     private GroupMemberRepository groupMemberRepository;
 
+    @Mock
+    private GroupMemberQueryRepository groupMemberQueryRepository;
     @InjectMocks
     private GroupCommandService groupCommandService;
 
@@ -140,4 +151,53 @@ class GroupCommandServiceTests {
         assertThatNoException();
     }
 
+    @DisplayName("그룹 가입하는 것에 성공한다.")
+    @Test
+    void joinGroupSuccessTest() {
+
+        Long groupId = 1L;
+        Long memberId = 1L;
+
+        GroupJoinRequest groupJoinRequest = new GroupJoinRequest(groupId, memberId);
+        Group group = new Group(null, null, null, null, 300);
+        Member member = new Member(null, null, null, null);
+
+        given(groupMemberQueryRepository.isJoinedGroupMember(anyLong(), anyLong()))
+                .willReturn(false);
+        given(groupQueryRepository.findById(anyLong())).willReturn(Optional.of(group));
+        given(memberQueryRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        // TODO : 해당 그룹에 인원체크를 해야한다.
+        groupCommandService.joinGroup(groupJoinRequest);
+
+        then(groupMemberQueryRepository).should(times(1))
+                .isJoinedGroupMember(anyLong(), anyLong());
+
+        then(groupQueryRepository).should(times(1)).findById(anyLong());
+        then(memberQueryRepository).should(times(1)).findById(anyLong());
+    }
+
+    @DisplayName("모임에 이미 가입되어 있어서 실패한다.")
+    @Test
+    void joinGroupFailTest() {
+        Long groupId = 1L;
+        Long memberId = 1L;
+
+        GroupJoinRequest groupJoinRequest = new GroupJoinRequest(groupId, memberId);
+        Group group = new Group(null, null, null, null, 300);
+        Member member = new Member(null, null, null, null);
+
+        given(groupMemberQueryRepository.isJoinedGroupMember(anyLong(), anyLong()))
+                .willReturn(true);
+
+        assertThatThrownBy(() -> groupCommandService.joinGroup(groupJoinRequest))
+                .isInstanceOf(AlreadyJoinGroupMemberException.class)
+                .hasMessageContaining("이미 가입한 그룹입니다.");
+
+        then(groupMemberQueryRepository).should(times(1))
+                .isJoinedGroupMember(anyLong(), anyLong());
+        then(groupQueryRepository).shouldHaveNoInteractions();
+        then(memberQueryRepository).shouldHaveNoInteractions();
+
+    }
 }
