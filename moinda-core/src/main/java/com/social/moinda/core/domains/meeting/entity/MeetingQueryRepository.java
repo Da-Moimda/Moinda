@@ -10,11 +10,6 @@ import java.util.Optional;
 import static com.social.moinda.core.domains.group.entity.QGroup.group;
 import static com.social.moinda.core.domains.meetingmember.entity.QMeetingMember.meetingMember;
 
-/**
- * TODO:
- *  22-07-28 15:10
- *  Meeting Querydsl 작성 도중 Meeting - Member 연관관계 변경 필요.
- */
 @Repository
 public class MeetingQueryRepository extends QuerydslRepositorySupport {
 
@@ -29,14 +24,22 @@ public class MeetingQueryRepository extends QuerydslRepositorySupport {
     }
 
     public Optional<MeetingDetails> findMeeting(Long meetingId) {
-        Meeting entity = jpaQueryFactory.selectFrom(meeting).distinct()
-                .leftJoin(meeting.meetingMember, meetingMember).fetchJoin()
-                .leftJoin(meeting.group, group).fetchJoin()
-                .where(meeting.id.eq(meetingId))
-                .fetchFirst();
+        Meeting entity = getMeeting(meetingId);
 
         MeetingDetails meetingDetails = entity.bindToMeetingDetails();
 
         return Optional.ofNullable(meetingDetails);
+    }
+
+    public Optional<Meeting> findById(Long meetingId) {
+        return Optional.ofNullable(getMeeting(meetingId));
+    }
+
+    private Meeting getMeeting(Long meetingId) {
+        return jpaQueryFactory.selectFrom(meeting).distinct()
+                .leftJoin(meeting.meetingMember, meetingMember).fetchJoin()
+                .leftJoin(meeting.group, group).fetchJoin()
+                .where(meeting.id.eq(meetingId))
+                .fetchFirst();
     }
 }

@@ -21,6 +21,7 @@ public class MeetingCreateDto {
     private String shopName;
     private String streetName;
 
+    // 총 인원 수.
     private int amount;
 
     // TODO : request 시 어떤 형태의 값으로 보내줘야 하는가.

@@ -1,6 +1,7 @@
 package com.social.moinda.web.meeting;
 
 import com.social.moinda.api.meeting.dto.MeetingCreateDto;
+import com.social.moinda.api.meeting.dto.MeetingJoinRequest;
 import com.social.moinda.api.meeting.service.MeetingCommandService;
 import com.social.moinda.api.meeting.service.MeetingQueryService;
 import com.social.moinda.core.domains.meeting.dto.MeetingCreateResponse;
@@ -24,6 +25,12 @@ public class MeetingApiController {
         MeetingCreateResponse meetingCreateResponse = meetingCommandService.create(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(meetingCreateResponse);
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<Void> join(@RequestBody MeetingJoinRequest meetingJoinRequest) {
+        meetingCommandService.joinMeeting(meetingJoinRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("/{meetingId}")

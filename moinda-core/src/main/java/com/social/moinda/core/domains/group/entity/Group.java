@@ -8,7 +8,6 @@ import com.social.moinda.core.domains.member.dto.MemberDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import java.util.List;
 @AttributeOverride(name = "id", column = @Column(name = "group_id"))
 @Table(name = "TABLE_GROUP")
 @Entity
-@ToString(exclude = "groupMember")
 public class Group extends BaseEntity {
 
     @Column(name = "group_name", nullable = false, length = 30, unique = true)

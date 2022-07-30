@@ -17,7 +17,6 @@ import javax.persistence.*;
 @AttributeOverride(name = "id", column = @Column(name = "meeting_member_id"))
 @Table(name = "TABLE_MEETINGMEMBER")
 @Entity
-@ToString
 public class MeetingMember extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
