@@ -3,6 +3,7 @@ package com.social.moinda.core.domains.group.entity;
 import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
 import com.social.moinda.core.domains.group.dto.GroupDto;
+import com.social.moinda.core.domains.group.dto.GroupJoinResponse;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import lombok.AccessLevel;
@@ -78,4 +79,19 @@ public class Group extends BaseEntity {
         );
     }
 
+    public GroupJoinResponse bindToJoinResponse(Long memberId) {
+        return new GroupJoinResponse(
+                memberId,
+                this.getId(),
+                this.name
+        );
+    }
+
+    public boolean enabledJoin() {
+        return this.capacity > this.joinedUserNum();
+    }
+
+    private int joinedUserNum() {
+        return this.groupMember.size();
+    }
 }

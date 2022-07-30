@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.social.moinda.core.domains.group.entity.QGroup.group;
@@ -23,13 +24,21 @@ public class GroupMemberQueryRepository extends QuerydslRepositorySupport {
     }
 
     public Optional<GroupMember> findGroupMemberById(Long groupId, Long memberId) {
-        GroupMember entity = jpaQueryFactory.selectFrom(groupMember)
+        GroupMember entity = getGroupMember(groupId, memberId);
+        return Optional.ofNullable(entity);
+    }
+
+    public boolean isJoinedGroupMember(Long groupId, Long memberId) {
+        GroupMember entity = getGroupMember(groupId, memberId);
+        return Objects.nonNull(entity);
+    }
+
+    private GroupMember getGroupMember(Long groupId, Long memberId) {
+        return jpaQueryFactory.selectFrom(groupMember)
                 .leftJoin(groupMember.group, group).fetchJoin()
                 .leftJoin(groupMember.member, member).fetchJoin()
                 .where(groupMember.group.id.eq(groupId))
                 .where(groupMember.member.id.eq(memberId))
                 .fetchFirst();
-
-        return Optional.ofNullable(entity);
     }
 }
