@@ -23,7 +23,7 @@ public class MeetingQueryRepository extends QuerydslRepositorySupport {
         this.meeting = QMeeting.meeting;
     }
 
-    public Optional<MeetingDetails> findMeeting(Long meetingId) {
+    public Optional<MeetingDetails> findMeetingById(Long meetingId) {
         Meeting entity = getMeeting(meetingId);
 
         MeetingDetails meetingDetails = entity.bindToMeetingDetails();

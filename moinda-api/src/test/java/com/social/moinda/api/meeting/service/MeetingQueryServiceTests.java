@@ -36,12 +36,12 @@ public class MeetingQueryServiceTests {
 
         MeetingDetails meetingDetails = new MeetingDetails(null, 0, null);
 
-        given(meetingQueryRepository.findMeeting(anyLong()))
+        given(meetingQueryRepository.findMeetingById(anyLong()))
                 .willReturn(Optional.of(meetingDetails));
 
         meetingQueryService.getMeetingDetails(meetingId);
 
-        then(meetingQueryRepository).should(times(1)).findMeeting(meetingId);
+        then(meetingQueryRepository).should(times(1)).findMeetingById(meetingId);
         assertThatNoException();
     }
 
@@ -51,7 +51,7 @@ public class MeetingQueryServiceTests {
 
         Long memberId = 1L;
 
-        given(meetingQueryRepository.findMeeting(anyLong()))
+        given(meetingQueryRepository.findMeetingById(anyLong()))
                 .willThrow(new NotFoundMeetingException());
 
         assertThatThrownBy(() -> meetingQueryService.getMeetingDetails(memberId))

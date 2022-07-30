@@ -6,7 +6,7 @@ import com.social.moinda.api.group.exception.NotFoundGroupException;
 import com.social.moinda.api.meeting.dto.MeetingCreateDto;
 import com.social.moinda.api.meeting.dto.MeetingJoinRequest;
 import com.social.moinda.core.domains.group.entity.Group;
-import com.social.moinda.core.domains.group.entity.GroupRepository;
+import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
 import com.social.moinda.core.domains.groupmember.entity.GroupMemberQueryRepository;
 import com.social.moinda.core.domains.meeting.entity.Meeting;
@@ -38,7 +38,7 @@ public class MeetingCommandServiceTests {
     private MeetingRepository meetingRepository;
 
     @Mock
-    private GroupRepository groupRepository;
+    private GroupQueryRepository groupQueryRepository;
 
     @Mock
     private MeetingMemberRepository meetingMemberRepository;
@@ -77,12 +77,12 @@ public class MeetingCommandServiceTests {
 
         Meeting meeting = meetingCreateDto.bindToEntity(group);
 
-        given(groupRepository.findById(anyLong())).willReturn(Optional.of(group));
+        given(groupQueryRepository.findById(anyLong())).willReturn(Optional.of(group));
         given(meetingRepository.save(any(Meeting.class))).willReturn(meeting);
 
         meetingCommandService.create(meetingCreateDto);
 
-        then(groupRepository).should(times(1)).findById(anyLong());
+        then(groupQueryRepository).should(times(1)).findById(anyLong());
         then(meetingRepository).should(times(1)).save(any(Meeting.class));
     }
 
@@ -95,15 +95,15 @@ public class MeetingCommandServiceTests {
                 4500,
                 LocalDateTime.of(2022, 7, 31, 2, 30));
 
-        given(groupRepository.findById(anyLong()))
+        given(groupQueryRepository.findById(anyLong()))
                 .willThrow(new NotFoundGroupException());
 
         assertThatThrownBy(() -> meetingCommandService.create(meetingCreateDto))
                 .isInstanceOf(NotFoundGroupException.class)
                 .hasMessageContaining("존재하지 않는 그룹입니다.");
 
-        then(groupRepository).should(times(1)).findById(anyLong());
-        then(groupRepository).shouldHaveNoMoreInteractions();
+        then(groupQueryRepository).should(times(1)).findById(anyLong());
+        then(groupQueryRepository).shouldHaveNoMoreInteractions();
         then(meetingRepository).shouldHaveNoInteractions();
     }
 

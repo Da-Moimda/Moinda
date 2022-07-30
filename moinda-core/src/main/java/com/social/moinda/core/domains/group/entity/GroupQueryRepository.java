@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.social.moinda.core.domains.groupmember.entity.QGroupMember.groupMember;
 
@@ -23,6 +24,13 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
         super(Member.class);
         this.jpaQueryFactory = jpaQueryFactory;
         this.group = QGroup.group;
+    }
+
+    public Optional<Group> findById(Long groupId) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(group).distinct()
+                .leftJoin(group.groupMember, groupMember).fetchJoin()
+                .where(group.id.eq(groupId))
+                .fetchFirst());
     }
 
     public List<GroupDto> findGroupAll() {

@@ -15,10 +15,7 @@ public class MeetingQueryService {
     private final MeetingQueryRepository meetingQueryRepository;
 
     public MeetingDetails getMeetingDetails(Long meetingId) {
-
-        MeetingDetails meetingDetails = meetingQueryRepository.findMeeting(meetingId)
+        return meetingQueryRepository.findMeetingById(meetingId)
                 .orElseThrow(NotFoundMeetingException::new);
-
-        return meetingDetails;
     }
 }

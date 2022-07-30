@@ -9,6 +9,7 @@ import com.social.moinda.core.domains.meeting.dto.MeetingDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,7 +29,7 @@ public class MeetingApiController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<Void> join(@RequestBody MeetingJoinRequest meetingJoinRequest) {
+    public ResponseEntity<Void> join(@RequestBody @Validated MeetingJoinRequest meetingJoinRequest) {
         meetingCommandService.joinMeeting(meetingJoinRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -36,11 +37,6 @@ public class MeetingApiController {
     @GetMapping("/{meetingId}")
     public ResponseEntity<MeetingDetails> getDetails(@PathVariable Long meetingId) {
         MeetingDetails meetingDetails = meetingQueryService.getMeetingDetails(meetingId);
-        System.out.println();
-        System.out.println("------------------------------------");
-        System.out.println("in Controller.....");
-        System.out.println("meetingDetails : " + meetingDetails);
-
         return ResponseEntity.status(HttpStatus.OK).body(meetingDetails);
     }
 
