@@ -184,8 +184,6 @@ class GroupCommandServiceTests {
         Long memberId = 1L;
 
         GroupJoinRequest groupJoinRequest = new GroupJoinRequest(groupId, memberId);
-        Group group = new Group(null, null, null, null, 300);
-        Member member = new Member(null, null, null, null);
 
         given(groupMemberQueryRepository.isJoinedGroupMember(anyLong(), anyLong()))
                 .willReturn(true);

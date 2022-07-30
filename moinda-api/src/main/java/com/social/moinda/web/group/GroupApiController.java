@@ -1,10 +1,12 @@
 package com.social.moinda.web.group;
 
 import com.social.moinda.api.group.dto.GroupCreateDto;
+import com.social.moinda.api.group.dto.GroupJoinRequest;
 import com.social.moinda.api.group.service.GroupCommandService;
 import com.social.moinda.api.group.service.GroupQueryService;
 import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
 import com.social.moinda.core.domains.group.dto.GroupDto;
+import com.social.moinda.core.domains.group.dto.GroupJoinResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,12 @@ public class GroupApiController {
     public ResponseEntity<GroupCreateResponse> create(@RequestBody @Validated GroupCreateDto dto) {
         GroupCreateResponse groupCreateResponse = groupCommandService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(groupCreateResponse);
+    }
+
+    @PostMapping("/join")
+    public ResponseEntity<GroupJoinResponse> joinGroup(@RequestBody @Validated GroupJoinRequest joinRequest) {
+        GroupJoinResponse JoinResponse = groupCommandService.joinGroup(joinRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(JoinResponse);
     }
 
     @GetMapping("")

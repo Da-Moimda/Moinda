@@ -7,6 +7,7 @@ import com.social.moinda.api.group.exception.RegisteredGroupNameException;
 import com.social.moinda.api.groupmember.exception.AlreadyJoinGroupMemberException;
 import com.social.moinda.api.member.exception.NotFoundMemberException;
 import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
+import com.social.moinda.core.domains.group.dto.GroupJoinResponse;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
 import com.social.moinda.core.domains.group.entity.GroupRepository;
@@ -55,10 +56,10 @@ public class GroupCommandService {
     }
 
     /**
-     * TODO : 반환타입 설정
+     * TODO :
      *  인원 수 체크 필요.
      */
-    public void joinGroup(GroupJoinRequest joinRequest) {
+    public GroupJoinResponse joinGroup(GroupJoinRequest joinRequest) {
         Long groupId = joinRequest.getGroupId();
         Long memberId = joinRequest.getMemberId();
 
@@ -67,12 +68,16 @@ public class GroupCommandService {
         Group group = groupQueryRepository.findById(groupId)
                 .orElseThrow(NotFoundGroupException::new);
 
+        isEnabledJoinStatus(group);
+
         Member member = memberQueryRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
         GroupMember groupMember = new GroupMember(group, member);
 
         groupMemberRepository.save(groupMember);
+
+        return groupMember.convertToJoinResponse(memberId);
     }
 
     @Transactional(readOnly = true)
@@ -94,6 +99,12 @@ public class GroupCommandService {
     public void isJoinedGroupMember(Long groupId, Long memberId) {
         if(groupMemberQueryRepository.isJoinedGroupMember(groupId, memberId)) {
             throw new AlreadyJoinGroupMemberException();
+        }
+    }
+
+    private void isEnabledJoinStatus(Group group) {
+        if(!group.enabledJoin()) {
+           throw new IllegalStateException("그룹 정원이 다 찼습니다.");
         }
     }
 }

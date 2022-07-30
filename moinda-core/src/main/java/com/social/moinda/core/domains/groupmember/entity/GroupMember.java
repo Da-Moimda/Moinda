@@ -2,6 +2,7 @@ package com.social.moinda.core.domains.groupmember.entity;
 
 
 import com.social.moinda.core.BaseEntity;
+import com.social.moinda.core.domains.group.dto.GroupJoinResponse;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.member.entity.Member;
 import lombok.AccessLevel;
@@ -28,5 +29,9 @@ public class GroupMember extends BaseEntity {
     public GroupMember(Group group, Member member) {
         this.group = group;
         this.member = member;
+    }
+
+    public GroupJoinResponse convertToJoinResponse(Long memberId) {
+        return group.bindToJoinResponse(memberId);
     }
 }

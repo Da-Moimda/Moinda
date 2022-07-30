@@ -1,6 +1,7 @@
 package com.social.moinda.web.group;
 
 import com.social.moinda.api.group.dto.GroupCreateDto;
+import com.social.moinda.api.group.dto.GroupJoinRequest;
 import com.social.moinda.api.group.service.GroupCommandService;
 import com.social.moinda.api.group.service.GroupQueryService;
 import com.social.moinda.core.domains.group.dto.GroupDto;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doAnswer;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -36,7 +39,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
     void successCreateGroupTest() throws Exception {
 
         GroupCreateDto groupCreateDto = new GroupCreateDto(1L, "유저1", "안녕하세요?"
-        ,"경기도", "부천시", "FREE", 30);
+                , "경기도", "부천시", "FREE", 30);
 
         ResultActions perform = getCreateResultActions(groupCreateDto);
 
@@ -47,7 +50,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
     @Test
     void failToCreateGroupBecauseOfMemberIdTest() throws Exception {
         GroupCreateDto groupCreateDto = new GroupCreateDto(null, "그룹1", "안녕하세요?"
-                ,"경기도", "부천시", "FREE", 30);
+                , "경기도", "부천시", "FREE", 30);
 
         ResultActions perform = getCreateResultActions(groupCreateDto);
 
@@ -58,7 +61,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
     @Test
     void failToCreateGroupBecauseOfNameTest() throws Exception {
         GroupCreateDto groupCreateDto = new GroupCreateDto(1L, "", "안녕하세요?"
-                ,"경기도", "부천시", "FREE", 30);
+                , "경기도", "부천시", "FREE", 30);
 
         ResultActions perform = getCreateResultActions(groupCreateDto);
 
@@ -69,7 +72,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
     @Test
     void failToCreateGroupBecauseOfIntroduceTest() throws Exception {
         GroupCreateDto groupCreateDto = new GroupCreateDto(1L, "그룹1", ""
-                ,"경기도", "부천시", "FREE", 30);
+                , "경기도", "부천시", "FREE", 30);
 
         ResultActions perform = getCreateResultActions(groupCreateDto);
 
@@ -81,7 +84,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
     @Test
     void failToCreateGroupBecauseOfConcernTest() throws Exception {
         GroupCreateDto groupCreateDto = new GroupCreateDto(1L, "그룹1", "안녕하세요?"
-                ,"경기도", "부천시", "", 30);
+                , "경기도", "부천시", "", 30);
 
         ResultActions perform = getCreateResultActions(groupCreateDto);
 
@@ -92,7 +95,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
     @Test
     void failToCreateGroupBecauseOfCapacityTest() throws Exception {
         GroupCreateDto groupCreateDto = new GroupCreateDto(1L, "그룹1", "안녕하세요?"
-                ,"경기도", "부천시", "FREE", 5);
+                , "경기도", "부천시", "FREE", 5);
 
         ResultActions perform = getCreateResultActions(groupCreateDto);
 
@@ -128,10 +131,27 @@ public class GroupApiControllerTests extends BaseApiConfig {
 
         given(groupQueryService.searchGroups(anyString())).willReturn(dtoList);
 
-        ResultActions perform = mockMvc.perform(get(GROUP_API_URL+"/"+"부천"));
+        ResultActions perform = mockMvc.perform(get(GROUP_API_URL + "/" + "부천"));
 
         perform.andExpect(status().is2xxSuccessful())
                 .andExpect(content().json(toJson(dtoList)));
+    }
+
+    @DisplayName("그룹 가입에 성공한다.")
+    @Test
+    void successJoinGroupTest() throws Exception {
+        GroupJoinRequest joinRequest = new GroupJoinRequest(1L, 1L);
+
+        doAnswer(answer -> {
+            System.out.println("Stubbing ...");
+            return null;
+        }).when(groupCommandService).joinGroup(any(GroupJoinRequest.class));
+
+        ResultActions perform = mockMvc.perform(post(GROUP_API_URL + "/join")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(joinRequest)));
+
+        perform.andExpect(status().isOk());
     }
 
     private ResultActions getCreateResultActions(GroupCreateDto groupCreateDto) throws Exception {
