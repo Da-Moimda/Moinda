@@ -1,6 +1,7 @@
 package com.social.moinda.web.meeting;
 
 import com.social.moinda.api.meeting.dto.MeetingCreateDto;
+import com.social.moinda.api.meeting.dto.MeetingJoinRequest;
 import com.social.moinda.api.meeting.service.MeetingCommandService;
 import com.social.moinda.api.meeting.service.MeetingQueryService;
 import com.social.moinda.core.domains.meeting.dto.MeetingDetails;
@@ -8,7 +9,6 @@ import com.social.moinda.core.domains.member.dto.MemberDto;
 import com.social.moinda.web.BaseApiConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -63,7 +64,7 @@ public class MeetingApiControllerTests extends BaseApiConfig {
 
         MeetingDetails meetingDetails = new MeetingDetails(memberDtoList, userNum, meetingDate);
 
-        BDDMockito.given(meetingQueryService.getMeetingDetails(anyLong()))
+        given(meetingQueryService.getMeetingDetails(anyLong()))
                         .willReturn(meetingDetails);
 
         ResultActions perform = mockMvc.perform(get(MEETING_API_URL + "/" + memberId));
@@ -71,6 +72,22 @@ public class MeetingApiControllerTests extends BaseApiConfig {
         perform.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(toJson(meetingDetails)));
+    }
+
+    @DisplayName("모임 참가에 성공한다.")
+    @Test
+    void joinMeetingSuccessTest() throws Exception {
+        Long meetingId = 1L;
+        Long memberId = 1L;
+        Long groupId = 1L;
+
+        MeetingJoinRequest meetingJoinRequest = new MeetingJoinRequest(meetingId, memberId, groupId);
+
+        ResultActions perform = mockMvc.perform(post(MEETING_API_URL + "/join")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(meetingJoinRequest)));
+
+        perform.andExpect(status().isOk());
     }
 
 }

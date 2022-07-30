@@ -4,10 +4,16 @@ package com.social.moinda.api.meeting.service;
 import com.social.moinda.api.group.dto.GroupCreateDto;
 import com.social.moinda.api.group.exception.NotFoundGroupException;
 import com.social.moinda.api.meeting.dto.MeetingCreateDto;
+import com.social.moinda.api.meeting.dto.MeetingJoinRequest;
 import com.social.moinda.core.domains.group.entity.Group;
-import com.social.moinda.core.domains.group.entity.GroupRepository;
+import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
+import com.social.moinda.core.domains.groupmember.entity.GroupMember;
+import com.social.moinda.core.domains.groupmember.entity.GroupMemberQueryRepository;
 import com.social.moinda.core.domains.meeting.entity.Meeting;
+import com.social.moinda.core.domains.meeting.entity.MeetingQueryRepository;
 import com.social.moinda.core.domains.meeting.entity.MeetingRepository;
+import com.social.moinda.core.domains.meetingmember.entity.MeetingMember;
+import com.social.moinda.core.domains.meetingmember.entity.MeetingMemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +38,16 @@ public class MeetingCommandServiceTests {
     private MeetingRepository meetingRepository;
 
     @Mock
-    private GroupRepository groupRepository;
+    private GroupQueryRepository groupQueryRepository;
+
+    @Mock
+    private MeetingMemberRepository meetingMemberRepository;
+
+    @Mock
+    private GroupMemberQueryRepository groupMemberQueryRepository;
+
+    @Mock
+    private MeetingQueryRepository meetingQueryRepository;
 
     @InjectMocks
     private MeetingCommandService meetingCommandService;
@@ -62,12 +77,12 @@ public class MeetingCommandServiceTests {
 
         Meeting meeting = meetingCreateDto.bindToEntity(group);
 
-        given(groupRepository.findById(anyLong())).willReturn(Optional.of(group));
+        given(groupQueryRepository.findById(anyLong())).willReturn(Optional.of(group));
         given(meetingRepository.save(any(Meeting.class))).willReturn(meeting);
 
         meetingCommandService.create(meetingCreateDto);
 
-        then(groupRepository).should(times(1)).findById(anyLong());
+        then(groupQueryRepository).should(times(1)).findById(anyLong());
         then(meetingRepository).should(times(1)).save(any(Meeting.class));
     }
 
@@ -80,15 +95,43 @@ public class MeetingCommandServiceTests {
                 4500,
                 LocalDateTime.of(2022, 7, 31, 2, 30));
 
-        given(groupRepository.findById(anyLong()))
+        given(groupQueryRepository.findById(anyLong()))
                 .willThrow(new NotFoundGroupException());
 
         assertThatThrownBy(() -> meetingCommandService.create(meetingCreateDto))
                 .isInstanceOf(NotFoundGroupException.class)
                 .hasMessageContaining("존재하지 않는 그룹입니다.");
 
-        then(groupRepository).should(times(1)).findById(anyLong());
-        then(groupRepository).shouldHaveNoMoreInteractions();
+        then(groupQueryRepository).should(times(1)).findById(anyLong());
+        then(groupQueryRepository).shouldHaveNoMoreInteractions();
         then(meetingRepository).shouldHaveNoInteractions();
+    }
+
+    @DisplayName("모임에 참여하는 것을 성공한다.")
+    @Test
+    void joinInMeetingSuccessTest() {
+
+        Long meetingId = 1L;
+        Long memberId = 1L;
+        Long groupId = 1L;
+        // 사용자 ID, 그룹ID, 모임ID
+        MeetingJoinRequest meetingJoinRequest = new MeetingJoinRequest(meetingId, memberId, groupId);
+
+        GroupMember groupMember = new GroupMember(null, null);
+        Meeting meeting = new Meeting(null, null, 5000, LocalDateTime.of(2022, 7, 31, 2, 30));
+
+        MeetingMember meetingMember = new MeetingMember(null, null);
+
+        given(groupMemberQueryRepository.findGroupMemberById(anyLong(), anyLong()))
+                .willReturn(Optional.of(groupMember));
+        given(meetingQueryRepository.findById(anyLong())).willReturn(Optional.of(meeting));
+        given(meetingMemberRepository.save(any(MeetingMember.class)))
+                .willReturn(meetingMember);
+
+        meetingCommandService.joinMeeting(meetingJoinRequest);
+
+        then(groupMemberQueryRepository).should(times(1)).findGroupMemberById(groupId, memberId);
+        then(meetingQueryRepository).should(times(1)).findById(meetingId);
+        then(meetingMemberRepository).should(times(1)).save(any(MeetingMember.class));
     }
 }
