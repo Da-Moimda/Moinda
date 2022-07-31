@@ -1,7 +1,6 @@
 package com.social.moinda.core.domains.meeting.entity;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.social.moinda.core.domains.meeting.dto.MeetingDetails;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -23,12 +22,9 @@ public class MeetingQueryRepository extends QuerydslRepositorySupport {
         this.meeting = QMeeting.meeting;
     }
 
-    public Optional<MeetingDetails> findMeetingById(Long meetingId) {
+    public Optional<Meeting> findMeetingById(Long meetingId) {
         Meeting entity = getMeeting(meetingId);
-
-        MeetingDetails meetingDetails = entity.bindToMeetingDetails();
-
-        return Optional.ofNullable(meetingDetails);
+        return Optional.ofNullable(entity);
     }
 
     public Optional<Meeting> findById(Long meetingId) {
@@ -40,6 +36,6 @@ public class MeetingQueryRepository extends QuerydslRepositorySupport {
                 .leftJoin(meeting.meetingMember, meetingMember).fetchJoin()
                 .leftJoin(meeting.group, group).fetchJoin()
                 .where(meeting.id.eq(meetingId))
-                .fetchFirst();
+                .fetchOne();
     }
 }

@@ -31,7 +31,7 @@ public class MeetingCommandService {
     private final MeetingQueryRepository meetingQueryRepository;
 
     public MeetingCreateResponse create(MeetingCreateDto meetingCreateDto) {
-
+        // firstResult/maxResults specified with collection fetch; applying in memory!
         Group group = existGroup(meetingCreateDto.getGroupId());
 
         Meeting meeting = meetingRepository.save(meetingCreateDto.bindToEntity(group));
