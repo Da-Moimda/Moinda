@@ -7,6 +7,7 @@ import com.social.moinda.core.domains.group.dto.Groups;
 import com.social.moinda.core.domains.member.entity.Member;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,15 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
         Groups groups = new Groups(groupList);
 
         return groups.getGroupDtoList();
+    }
+
+    public boolean existsByName(String name) {
+        Group entity = jpaQueryFactory.selectFrom(group).distinct()
+                .leftJoin(group.groupMember, groupMember).fetchJoin()
+                .where(group.name.equalsIgnoreCase(name))
+                .fetchFirst();
+
+        return !ObjectUtils.isEmpty(entity);
     }
 
     private BooleanExpression containGroup(String keyword) {

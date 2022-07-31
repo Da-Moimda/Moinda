@@ -2,6 +2,7 @@ package com.social.moinda.api.group.service;
 
 import com.social.moinda.api.group.dto.GroupCreateDto;
 import com.social.moinda.api.group.dto.GroupJoinRequest;
+import com.social.moinda.api.group.exception.NotEnabledJoinStatusException;
 import com.social.moinda.api.group.exception.NotFoundGroupException;
 import com.social.moinda.api.group.exception.RegisteredGroupNameException;
 import com.social.moinda.api.groupmember.exception.AlreadyJoinGroupMemberException;
@@ -16,7 +17,6 @@ import com.social.moinda.core.domains.groupmember.entity.GroupMemberQueryReposit
 import com.social.moinda.core.domains.groupmember.entity.GroupMemberRepository;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberQueryRepository;
-import com.social.moinda.core.domains.member.entity.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,6 @@ public class GroupCommandService {
 
     private final GroupRepository groupRepository;
     private final GroupQueryRepository groupQueryRepository;
-    private final MemberRepository memberRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final GroupMemberRepository groupMemberRepository;
     private final GroupMemberQueryRepository groupMemberQueryRepository;
@@ -46,19 +45,6 @@ public class GroupCommandService {
         return group.bindToCreateResponse(member.bindToMemberDto());
     }
 
-    /*
-    TODO : 양방향 매핑으로 변경시 로직수정 필요
- */
-    public void remove(Long groupId, Long memberId) {
-        existMember(memberId);
-        // TODO : Querydsl
-        groupRepository.deleteById(groupId); // TODO : 추가적인 select 쿼리발생 -> 벌크성 쿼리로 변경
-    }
-
-    /**
-     * TODO :
-     *  인원 수 체크 필요.
-     */
     public GroupJoinResponse joinGroup(GroupJoinRequest joinRequest) {
         Long groupId = joinRequest.getGroupId();
         Long memberId = joinRequest.getMemberId();
@@ -68,7 +54,7 @@ public class GroupCommandService {
         Group group = groupQueryRepository.findById(groupId)
                 .orElseThrow(NotFoundGroupException::new);
 
-        isEnabledJoinStatus(group);
+        isEnabledJoinStatusByCapacity(group);
 
         Member member = memberQueryRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
@@ -82,15 +68,13 @@ public class GroupCommandService {
 
     @Transactional(readOnly = true)
     public Member existMember(Long memberId) {
-        // TODO : Querydsl
-        return memberRepository.findById(memberId)
+        return memberQueryRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
     }
 
     @Transactional(readOnly = true)
     public void existByGroupName(String groupName) {
-        // TODO : Querydsl
-        if(groupRepository.existsByName(groupName)) {
+        if(groupQueryRepository.existsByName(groupName)) {
             throw new RegisteredGroupNameException();
         }
     }
@@ -102,9 +86,9 @@ public class GroupCommandService {
         }
     }
 
-    private void isEnabledJoinStatus(Group group) {
+    private void isEnabledJoinStatusByCapacity(Group group) {
         if(!group.enabledJoin()) {
-           throw new IllegalStateException("그룹 정원이 다 찼습니다.");
+           throw new NotEnabledJoinStatusException();
         }
     }
 }
