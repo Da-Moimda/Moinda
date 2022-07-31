@@ -6,6 +6,7 @@ import com.social.moinda.api.member.service.MemberQueryService;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.member.dto.MemberDetails;
 import com.social.moinda.core.domains.member.entity.Member;
+import com.social.moinda.web.ApiURLProvider;
 import com.social.moinda.web.BaseApiConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ class MemberApiControllerTests extends BaseApiConfig {
 
         SignupRequest createDto = new SignupRequest("user1@email.com", "하하", "12121212", "12121212");
 
-        mockMvc.perform(post(MEMBER_API_URL)
+        mockMvc.perform(post(ApiURLProvider.MEMBER_API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(createDto)))
                 .andExpect(status().isCreated());
@@ -54,7 +55,7 @@ class MemberApiControllerTests extends BaseApiConfig {
 
         SignupRequest createDto = new SignupRequest("user1@email.com", "user", "1212", "1212");
 
-        mockMvc.perform(post(MEMBER_API_URL)
+        mockMvc.perform(post(ApiURLProvider.MEMBER_API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(createDto)))
                 .andExpect(status().is4xxClientError())
@@ -77,7 +78,7 @@ class MemberApiControllerTests extends BaseApiConfig {
 
         given(memberQueryService.getMemberWithGroupInfo(anyLong())).willReturn(memberDetails);
 
-        ResultActions perform = mockMvc.perform(get(MEMBER_API_URL + "/" + 1L));
+        ResultActions perform = mockMvc.perform(get(ApiURLProvider.MEMBER_API_URL + "/" + 1L));
 
         perform.andExpect(status().isOk())
                 .andExpect(content().json(toJson(memberDetails)));

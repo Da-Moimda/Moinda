@@ -14,13 +14,6 @@ public class BaseApiConfig {
     @Autowired
     private ObjectMapper objectMapper;
 
-    /*
-         TODO : 다른곳에서 관리하게 변경할 것
-     */
-    protected static final String MEMBER_API_URL = "/api/member";
-    protected static final String GROUP_API_URL = "/api/group";
-    protected static final String MEETING_API_URL = "/api/meeting";
-
     protected String toJson(Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);

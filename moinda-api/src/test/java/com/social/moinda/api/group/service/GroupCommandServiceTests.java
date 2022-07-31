@@ -22,10 +22,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.*;
@@ -71,14 +72,14 @@ class GroupCommandServiceTests {
         Member member = new Member("dssd@dsds.com","dsds","1212", null);
         GroupMember groupMember = new GroupMember(group, member);
 
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
-        given(groupRepository.existsByName(anyString())).willReturn(false);
+        given(memberQueryRepository.findById(anyLong())).willReturn(Optional.of(member));
+        given(groupQueryRepository.existsByName(anyString())).willReturn(false);
         given(groupMemberRepository.save(any(GroupMember.class))).willReturn(groupMember);
 
         groupCommandService.create(groupCreateDto);
 
-        then(memberRepository).should(times(1)).findById(anyLong());
-        then(groupRepository).should(times(1)).existsByName(anyString());
+        then(memberQueryRepository).should(times(1)).findById(anyLong());
+        then(groupQueryRepository).should(times(1)).existsByName(anyString());
         then(groupMemberRepository).should(times(1)).save(any(GroupMember.class));
         assertThatNoException();
     }
@@ -97,14 +98,14 @@ class GroupCommandServiceTests {
                 300
         );
 
-        given(memberRepository.findById(anyLong())).willThrow(new NotFoundMemberException());
+        given(memberQueryRepository.findById(anyLong())).willThrow(new NotFoundMemberException());
 
         assertThatThrownBy(() -> groupCommandService.create(groupCreateDto))
                 .isInstanceOf(NotFoundMemberException.class)
                 .hasMessageContaining("등록되지 않은 사용자 입니다.");
 
-        then(memberRepository).shouldHaveNoMoreInteractions();
-        then(groupRepository).shouldHaveNoMoreInteractions();
+        then(memberQueryRepository).shouldHaveNoMoreInteractions();
+        then(groupQueryRepository).shouldHaveNoMoreInteractions();
     }
 
     @DisplayName("그룹명이 중복되어 생성에 실패한다. - 실패")
@@ -123,32 +124,16 @@ class GroupCommandServiceTests {
 
         Member member = new Member("dssd@dsds.com","dsds","1212", null);
 
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
-        given(groupRepository.existsByName(anyString()))
+        given(memberQueryRepository.findById(anyLong())).willReturn(Optional.of(member));
+        given(groupQueryRepository.existsByName(anyString()))
                 .willThrow(new RegisteredGroupNameException());
 
         assertThatThrownBy(() -> groupCommandService.create(groupCreateDto))
                 .isInstanceOf(RegisteredGroupNameException.class)
                 .hasMessageContaining("등록된 그룹명 입니다.");
 
-        then(memberRepository).shouldHaveNoMoreInteractions();
-        then(groupRepository).shouldHaveNoMoreInteractions();
-    }
-
-    @DisplayName("그룹 해체하기 - 성공")
-    @Test
-    void removeGroupSuccessTest() {
-
-        Member member = new Member("user1@eamil.com", "user1", "12121212", null);
-
-        doNothing().when(groupRepository).deleteById(anyLong());
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
-
-        groupCommandService.remove(anyLong(), 1L);
-
-        then(memberRepository).should(times(1)).findById(anyLong());
-        then(groupRepository).should(times(1)).deleteById(anyLong());
-        assertThatNoException();
+        then(memberQueryRepository).shouldHaveNoMoreInteractions();
+        then(groupQueryRepository).shouldHaveNoMoreInteractions();
     }
 
     @DisplayName("그룹 가입하는 것에 성공한다.")
@@ -167,7 +152,6 @@ class GroupCommandServiceTests {
         given(groupQueryRepository.findById(anyLong())).willReturn(Optional.of(group));
         given(memberQueryRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        // TODO : 해당 그룹에 인원체크를 해야한다.
         groupCommandService.joinGroup(groupJoinRequest);
 
         then(groupMemberQueryRepository).should(times(1))
@@ -196,6 +180,23 @@ class GroupCommandServiceTests {
                 .isJoinedGroupMember(anyLong(), anyLong());
         then(groupQueryRepository).shouldHaveNoInteractions();
         then(memberQueryRepository).shouldHaveNoInteractions();
+
+    }
+
+    @DisplayName("정원이 모두 차서 그룹 가입에 실패한다.")
+    @Test
+    void joinGroupFailBecauseOfCapacityTest() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
+        Group group = new Group(null, null, null, null, 0);
+
+        Method method = GroupCommandService.class.getDeclaredMethod("isEnabledJoinStatusByCapacity", Group.class);
+        method.setAccessible(true);
+
+        try {
+            method.invoke(groupCommandService, group);
+        } catch (InvocationTargetException e) {
+            assertThat(e.getCause().getMessage()).isEqualTo("그룹 정원이 다 찼습니다.");
+        }
 
     }
 }

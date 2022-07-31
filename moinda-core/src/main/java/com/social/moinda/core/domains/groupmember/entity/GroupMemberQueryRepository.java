@@ -3,8 +3,8 @@ package com.social.moinda.core.domains.groupmember.entity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ObjectUtils;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static com.social.moinda.core.domains.group.entity.QGroup.group;
@@ -30,7 +30,7 @@ public class GroupMemberQueryRepository extends QuerydslRepositorySupport {
 
     public boolean isJoinedGroupMember(Long groupId, Long memberId) {
         GroupMember entity = getGroupMember(groupId, memberId);
-        return Objects.nonNull(entity);
+        return !ObjectUtils.isEmpty(entity);
     }
 
     private GroupMember getGroupMember(Long groupId, Long memberId) {

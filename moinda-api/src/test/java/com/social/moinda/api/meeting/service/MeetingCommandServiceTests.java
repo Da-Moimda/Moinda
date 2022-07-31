@@ -114,7 +114,7 @@ public class MeetingCommandServiceTests {
         Long meetingId = 1L;
         Long memberId = 1L;
         Long groupId = 1L;
-        // 사용자 ID, 그룹ID, 모임ID
+
         MeetingJoinRequest meetingJoinRequest = new MeetingJoinRequest(meetingId, memberId, groupId);
 
         GroupMember groupMember = new GroupMember(null, null);
