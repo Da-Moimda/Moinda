@@ -5,6 +5,7 @@ import com.social.moinda.api.group.dto.GroupJoinRequest;
 import com.social.moinda.api.group.service.GroupCommandService;
 import com.social.moinda.api.group.service.GroupQueryService;
 import com.social.moinda.core.domains.group.dto.GroupDto;
+import com.social.moinda.web.ApiURLProvider;
 import com.social.moinda.web.BaseApiConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -114,7 +115,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
 
         given(groupQueryService.searchGroups()).willReturn(dtoList);
 
-        ResultActions perform = mockMvc.perform(get(GROUP_API_URL));
+        ResultActions perform = mockMvc.perform(get(ApiURLProvider.GROUP_API_URL));
 
         perform.andExpect(status().is2xxSuccessful())
                 .andExpect(content().json(toJson(dtoList)));
@@ -131,7 +132,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
 
         given(groupQueryService.searchGroups(anyString())).willReturn(dtoList);
 
-        ResultActions perform = mockMvc.perform(get(GROUP_API_URL + "/" + "부천"));
+        ResultActions perform = mockMvc.perform(get(ApiURLProvider.GROUP_API_URL + "/" + "부천"));
 
         perform.andExpect(status().is2xxSuccessful())
                 .andExpect(content().json(toJson(dtoList)));
@@ -147,7 +148,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
             return null;
         }).when(groupCommandService).joinGroup(any(GroupJoinRequest.class));
 
-        ResultActions perform = mockMvc.perform(post(GROUP_API_URL + "/join")
+        ResultActions perform = mockMvc.perform(post(ApiURLProvider.GROUP_API_URL + "/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(joinRequest)));
 
@@ -155,7 +156,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
     }
 
     private ResultActions getCreateResultActions(GroupCreateDto groupCreateDto) throws Exception {
-        return mockMvc.perform(post(GROUP_API_URL)
+        return mockMvc.perform(post(ApiURLProvider.GROUP_API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(groupCreateDto)));
     }

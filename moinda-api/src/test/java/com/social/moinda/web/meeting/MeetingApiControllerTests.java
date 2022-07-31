@@ -6,6 +6,7 @@ import com.social.moinda.api.meeting.service.MeetingCommandService;
 import com.social.moinda.api.meeting.service.MeetingQueryService;
 import com.social.moinda.core.domains.meeting.dto.MeetingDetails;
 import com.social.moinda.core.domains.member.dto.MemberDto;
+import com.social.moinda.web.ApiURLProvider;
 import com.social.moinda.web.BaseApiConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ public class MeetingApiControllerTests extends BaseApiConfig {
         MeetingCreateDto meetingCreateDto = new MeetingCreateDto(1L, "스타벅스 센트럴점",
                 "경기도 소향로 181", 4000, LocalDateTime.now());
 
-        ResultActions perform = mockMvc.perform(post(MEETING_API_URL)
+        ResultActions perform = mockMvc.perform(post(ApiURLProvider.MEETING_API_URL)
                 .content(toJson(meetingCreateDto))
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -67,7 +68,7 @@ public class MeetingApiControllerTests extends BaseApiConfig {
         given(meetingQueryService.getMeetingDetails(anyLong()))
                         .willReturn(meetingDetails);
 
-        ResultActions perform = mockMvc.perform(get(MEETING_API_URL + "/" + memberId));
+        ResultActions perform = mockMvc.perform(get(ApiURLProvider.MEETING_API_URL + "/" + memberId));
 
         perform.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -83,11 +84,11 @@ public class MeetingApiControllerTests extends BaseApiConfig {
 
         MeetingJoinRequest meetingJoinRequest = new MeetingJoinRequest(meetingId, memberId, groupId);
 
-        ResultActions perform = mockMvc.perform(post(MEETING_API_URL + "/join")
+        ResultActions perform = mockMvc.perform(post(ApiURLProvider.MEETING_API_URL + "/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(meetingJoinRequest)));
-
         perform.andExpect(status().isOk());
+
     }
 
 }

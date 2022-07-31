@@ -2,7 +2,6 @@ package com.social.moinda.api.group.service;
 
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
-import com.social.moinda.core.domains.group.entity.GroupRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +17,6 @@ import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class GroupQueryServiceTests {
-
-    @Mock
-    private GroupRepository groupRepository;
 
     @Mock
     private GroupQueryRepository groupQueryRepository;
