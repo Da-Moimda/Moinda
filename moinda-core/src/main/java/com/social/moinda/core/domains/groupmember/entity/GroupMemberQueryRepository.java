@@ -39,6 +39,6 @@ public class GroupMemberQueryRepository extends QuerydslRepositorySupport {
                 .leftJoin(groupMember.member, member).fetchJoin()
                 .where(groupMember.group.id.eq(groupId))
                 .where(groupMember.member.id.eq(memberId))
-                .fetchFirst();
+                .fetchOne();
     }
 }

@@ -1,7 +1,7 @@
 package com.social.moinda.api.meeting.service;
 
 import com.social.moinda.api.meeting.exception.NotFoundMeetingException;
-import com.social.moinda.core.domains.meeting.dto.MeetingDetails;
+import com.social.moinda.core.domains.meeting.entity.Meeting;
 import com.social.moinda.core.domains.meeting.entity.MeetingQueryRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,10 +34,9 @@ public class MeetingQueryServiceTests {
 
         Long meetingId = 1L;
 
-        MeetingDetails meetingDetails = new MeetingDetails(null, 0, null);
-
+        Meeting meeting = new Meeting(null, null, 3000, null);
         given(meetingQueryRepository.findMeetingById(anyLong()))
-                .willReturn(Optional.of(meetingDetails));
+                .willReturn(Optional.of(meeting));
 
         meetingQueryService.getMeetingDetails(meetingId);
 

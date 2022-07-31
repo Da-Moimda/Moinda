@@ -35,11 +35,10 @@ public class MemberQueryRepository extends QuerydslRepositorySupport {
 
     private Member getMember(Long memberId) {
         return jpaQueryFactory
-                .selectDistinct(member)
-                .from(member)
+                .selectFrom(member).distinct()
                 .leftJoin(member.groupMember, groupMember).fetchJoin()
                 .leftJoin(groupMember.group, group).fetchJoin()
                 .where(member.id.eq(memberId))
-                .fetchFirst();
+                .fetchOne();
     }
 }
