@@ -31,14 +31,13 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(group).distinct()
                 .leftJoin(group.groupMember, groupMember).fetchJoin()
                 .where(group.id.eq(groupId))
-                .fetchFirst());
+                .fetchOne());
     }
 
     public List<GroupDto> findGroupAll() {
         List<Group> groupList = jpaQueryFactory.selectFrom(group).distinct()
                 .leftJoin(group.groupMember, groupMember).fetchJoin()
                 .where(group.id.eq(groupMember.group.id))
-                .groupBy(group.id)
                 .fetch();
     // TODO : Service 계층에서 ?
         Groups groups = new Groups(groupList);
@@ -52,7 +51,6 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
                 .leftJoin(group.groupMember, groupMember).fetchJoin()
                 .where(group.id.eq(groupMember.group.id))
                 .where(containGroup(keyword))
-                .groupBy(group.id)
                 .fetch();
 
         // TODO : Service 계층에서 ?
@@ -65,8 +63,7 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
         Group entity = jpaQueryFactory.selectFrom(group).distinct()
                 .leftJoin(group.groupMember, groupMember).fetchJoin()
                 .where(group.name.equalsIgnoreCase(name))
-                .fetchFirst();
-
+                .fetchOne();
         return !ObjectUtils.isEmpty(entity);
     }
 
