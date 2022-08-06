@@ -2,9 +2,11 @@ package com.social.moinda.core.domains.group.entity;
 
 import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
+import com.social.moinda.core.domains.group.dto.GroupDetails;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.dto.GroupJoinResponse;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
+import com.social.moinda.core.domains.meeting.dto.MeetingDto;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,6 +15,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -77,6 +80,22 @@ public class Group extends BaseEntity {
                 this.concern.name(),
                 this.capacity
         );
+    }
+
+    public GroupDetails bindToGroupDetails(List<MeetingDto> meetings) {
+        return new GroupDetails(
+                this.getId(),
+                this.name
+                ,this.introduce,
+                convertToMemberDtoList(),
+                meetings
+        );
+    }
+
+    private List<MemberDto> convertToMemberDtoList() {
+        return groupMember.stream()
+                .map(GroupMember::convertToMemberDto)
+                .collect(Collectors.toList());
     }
 
     public GroupJoinResponse bindToJoinResponse(Long memberId) {

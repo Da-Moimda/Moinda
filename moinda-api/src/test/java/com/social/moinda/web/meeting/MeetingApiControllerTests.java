@@ -68,7 +68,7 @@ public class MeetingApiControllerTests extends BaseApiConfig {
         given(meetingQueryService.getMeetingDetails(anyLong()))
                         .willReturn(meetingDetails);
 
-        ResultActions perform = mockMvc.perform(get(ApiURLProvider.MEETING_API_URL + "/" + memberId));
+        ResultActions perform = mockMvc.perform(get(ApiURLProvider.MEETING_API_URL + "/" + memberId + "/details"));
 
         perform.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -90,5 +90,7 @@ public class MeetingApiControllerTests extends BaseApiConfig {
         perform.andExpect(status().isOk());
 
     }
+
+    // TODO : 그룹 내 모임 전체 목록 보여주는 API 테스트 코드 필요.
 
 }

@@ -37,9 +37,6 @@ public class Meeting extends BaseEntity {
     @OneToMany(mappedBy = "meeting", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     private List<MeetingMember> meetingMember = new ArrayList<>();
 
-    /*
-        TODO : 요청시 어떤 형식으로 받아올지, DB에 저장하는 방식(Converter사용)
-     */
     @Column(name = "meeting_date", nullable = false)
     private LocalDateTime meetingDate;
 

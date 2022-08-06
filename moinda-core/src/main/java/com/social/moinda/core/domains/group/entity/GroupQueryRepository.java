@@ -3,7 +3,6 @@ package com.social.moinda.core.domains.group.entity;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.social.moinda.core.domains.group.dto.GroupDto;
-import com.social.moinda.core.domains.group.dto.Groups;
 import com.social.moinda.core.domains.member.entity.Member;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -11,15 +10,17 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.social.moinda.core.domains.groupmember.entity.QGroupMember.groupMember;
+import static com.social.moinda.core.domains.member.entity.QMember.member;
 
 @Repository
 public class GroupQueryRepository extends QuerydslRepositorySupport {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    private QGroup group;
+    private final QGroup group;
 
     public GroupQueryRepository(JPAQueryFactory jpaQueryFactory) {
         super(Member.class);
@@ -30,33 +31,35 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
     public Optional<Group> findById(Long groupId) {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(group).distinct()
                 .leftJoin(group.groupMember, groupMember).fetchJoin()
+                .leftJoin(groupMember.member, member).fetchJoin()
                 .where(group.id.eq(groupId))
                 .fetchOne());
     }
 
-    public List<GroupDto> findGroupAll() {
-        List<Group> groupList = jpaQueryFactory.selectFrom(group).distinct()
+    public List<GroupDto> findGroups() {
+        List<Group> groups = jpaQueryFactory.selectFrom(group).distinct()
                 .leftJoin(group.groupMember, groupMember).fetchJoin()
                 .where(group.id.eq(groupMember.group.id))
                 .fetch();
-    // TODO : Service 계층에서 ?
-        Groups groups = new Groups(groupList);
 
-        return groups.getGroupDtoList();
+        return bindToDtoList(groups);
     }
 
     public List<GroupDto> findAllByNameContains(String keyword) {
 
-        List<Group> groupList = jpaQueryFactory.selectFrom(group).distinct()
+        List<Group> groups = jpaQueryFactory.selectFrom(group).distinct()
                 .leftJoin(group.groupMember, groupMember).fetchJoin()
                 .where(group.id.eq(groupMember.group.id))
                 .where(containGroup(keyword))
                 .fetch();
 
-        // TODO : Service 계층에서 ?
-        Groups groups = new Groups(groupList);
+        return bindToDtoList(groups);
+    }
 
-        return groups.getGroupDtoList();
+    private List<GroupDto> bindToDtoList(List<Group> groups) {
+        return groups.stream()
+                .map(Group::bindToGroupDto)
+                .collect(Collectors.toList());
     }
 
     public boolean existsByName(String name) {
