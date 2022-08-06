@@ -22,26 +22,19 @@ public class GroupQueryService {
     private final MeetingQueryRepository meetingQueryRepository;
 
     public List<GroupDto> searchGroups() {
-        List<GroupDto> dtoList = groupQueryRepository.findGroups();
-        return dtoList;
+        return groupQueryRepository.findGroups();
     }
 
     public List<GroupDto> searchGroups(String search) {
-        List<GroupDto> dtoList = groupQueryRepository.findAllByNameContains(search);
-        return dtoList;
+        return groupQueryRepository.findAllByNameContains(search);
     }
 
     public GroupDetails getGroupDetails(Long groupId) {
         Group group = groupQueryRepository.findById(groupId)
                 .orElseThrow(NotFoundGroupException::new);
-        System.out.println("group ... " +  group);
 
         List<MeetingDto> meetings = meetingQueryRepository.findMeetingsByGroupId(groupId);
-        System.out.println("meeting ... : " + meetings);
 
-        GroupDetails groupDetails = group.bindToGroupDetails(meetings);
-        System.out.println("details... : "+  groupDetails);
-
-        return groupDetails;
+        return group.bindToGroupDetails(meetings);
     }
 }

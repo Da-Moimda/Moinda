@@ -68,7 +68,7 @@ public class MeetingApiControllerTests extends BaseApiConfig {
         given(meetingQueryService.getMeetingDetails(anyLong()))
                         .willReturn(meetingDetails);
 
-        ResultActions perform = mockMvc.perform(get(ApiURLProvider.MEETING_API_URL + "/" + memberId));
+        ResultActions perform = mockMvc.perform(get(ApiURLProvider.MEETING_API_URL + "/" + memberId + "/details"));
 
         perform.andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

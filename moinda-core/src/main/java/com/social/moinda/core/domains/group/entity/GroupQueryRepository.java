@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.social.moinda.core.domains.groupmember.entity.QGroupMember.groupMember;
+import static com.social.moinda.core.domains.member.entity.QMember.member;
 
 @Repository
 public class GroupQueryRepository extends QuerydslRepositorySupport {
@@ -30,6 +31,7 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
     public Optional<Group> findById(Long groupId) {
         return Optional.ofNullable(jpaQueryFactory.selectFrom(group).distinct()
                 .leftJoin(group.groupMember, groupMember).fetchJoin()
+                .leftJoin(groupMember.member, member).fetchJoin()
                 .where(group.id.eq(groupId))
                 .fetchOne());
     }

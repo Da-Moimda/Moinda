@@ -45,8 +45,8 @@ public class MeetingQueryRepository extends QuerydslRepositorySupport {
     public List<MeetingDto> findMeetingsByGroupId(Long groupId) {
         List<Meeting> meetingList = jpaQueryFactory.selectFrom(meeting).distinct()
                 .leftJoin(meeting.group, group).fetchJoin()
+                .leftJoin(meeting.meetingMember, meetingMember).fetchJoin()
                 .where(meeting.group.id.eq(groupId))
-                .orderBy(meeting.id.desc())
                 .fetch();
 
         return meetingList.stream()
