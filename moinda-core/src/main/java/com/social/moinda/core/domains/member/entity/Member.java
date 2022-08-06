@@ -7,7 +7,6 @@ import com.social.moinda.core.domains.groupmember.entity.GroupMember;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import com.social.moinda.core.domains.member.dto.SignupResponse;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
  */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @AttributeOverride(name = "id", column = @Column(name = "member_id"))
 @Table(name = "TABLE_MEMBER")
 @Entity
@@ -34,15 +32,19 @@ public class Member extends BaseEntity {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "introduce", length = 50)
+    private String introduce;
+
     @Column(name = "password", nullable = false)
     private String password;
 
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     private List<GroupMember> groupMember = new ArrayList<>();
 
-    public Member(String email, String name, String password) {
+    public Member(String email, String name, String introduce, String password) {
         this.email = email;
         this.name = name;
+        this.introduce = introduce;
         this.password = password;
     }
 
@@ -50,7 +52,8 @@ public class Member extends BaseEntity {
         return new MemberDto(
                 this.getId(),
                 this.email,
-                this.name
+                this.name,
+                this.introduce
         );
     }
 
@@ -59,6 +62,7 @@ public class Member extends BaseEntity {
                 this.getId(),
                 this.email,
                 this.name,
+                this.introduce,
                 this.password
         );
     }

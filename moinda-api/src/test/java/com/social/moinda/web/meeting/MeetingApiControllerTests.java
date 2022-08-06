@@ -55,9 +55,9 @@ public class MeetingApiControllerTests extends BaseApiConfig {
         Long memberId = 1L;
 
         List<MemberDto> memberDtoList = List.of(
-                new MemberDto(1L, "user1@naver.com", "user1"),
-                new MemberDto(2L, "user2@naver.com", "user2"),
-                new MemberDto(3L, "user3@naver.com", "user3")
+                new MemberDto(1L, "user1@naver.com", "user1", "안녕하세요!!"),
+                new MemberDto(2L, "user2@naver.com", "user2", "안녕하세요!!"),
+                new MemberDto(3L, "user3@naver.com", "user3", "안녕하세요!!")
         );
 
         int userNum = memberDtoList.size();

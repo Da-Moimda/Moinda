@@ -33,7 +33,7 @@ class MemberCommandServiceTests {
     @Test
     void createSuccessTest() {
         // Given
-        SignupRequest createDto = new SignupRequest("user1@email.com", "user1", "12121212", "12121212");
+        SignupRequest createDto = new SignupRequest("user1@email.com", "user1", "안녕하세요", "12121212", "12121212");
 
         Member member = createDto.bindEntity();
         given(memberRepository.existsByEmail(createDto.getEmail())).willReturn(false);
@@ -48,7 +48,7 @@ class MemberCommandServiceTests {
     @DisplayName("회원 등록시 이미 사용자가 등록되어있다. - 실패")
     @Test
     void createFailTest() {
-        SignupRequest createDto = new SignupRequest("user1@email.com", "user1", "12121212", "12121212");
+        SignupRequest createDto = new SignupRequest("user1@email.com", "user1", "안녕하세요", "12121212", "12121212");
         Member member = createDto.bindEntity();
 
         given(memberRepository.existsByEmail(anyString())).willReturn(true);

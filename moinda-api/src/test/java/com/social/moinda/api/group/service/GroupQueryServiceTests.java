@@ -76,8 +76,8 @@ public class GroupQueryServiceTests {
     void getGroupDetailsSuccessTest() {
         GroupDetails groupDetails = new GroupDetails(
                 1L, "그룹", "그룹입니다."
-                ,List.of(new MemberDto(1L, "user1@email.com", "user1"),
-                new MemberDto(2L, "user2@email.com", "user2")),
+                ,List.of(new MemberDto(1L, "user1@email.com", "user1", "안녕하세요!!"),
+                new MemberDto(2L, "user2@email.com", "user2", "안녕하세요!!")),
                 List.of(new MeetingDto(1L, "스타벅스", 5000, LocalDateTime.now()),
                         new MeetingDto(2L, "투썸", 4500, LocalDateTime.now())));
 

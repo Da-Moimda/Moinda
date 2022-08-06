@@ -39,7 +39,7 @@ class MemberQueryServiceTest {
     @DisplayName("사용자 찾기 - 성공")
     @Test
     void successGetMemberInfo() {
-        Member member = new Member("user1@email.com", "user1", "12121212", null);
+        Member member = new Member("user1@email.com", "user1", "안녕하세요", "12121212" );
 
         given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(member));
 
@@ -64,7 +64,7 @@ class MemberQueryServiceTest {
     @DisplayName("사용자가 가진 그룹정보 같이 가져오기")
     @Test
     void successGetMemberAndGroupInfo() {
-        Member member = new Member("user1@email.com", "user1", "12121212");
+        Member member = new Member("user1@email.com", "user1", "안녕하세요.", "12121212");
 
         MemberDetails memberDetails = new MemberDetails(member.bindToMemberDto(), List.of(
                 new GroupDto(1L, "그룹1", "부천시", "FREE", 20),
