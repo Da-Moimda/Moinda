@@ -1,6 +1,7 @@
 package com.social.moinda.api.meeting.service;
 
 import com.social.moinda.api.meeting.exception.NotFoundMeetingException;
+import com.social.moinda.core.domains.meeting.dto.MeetingDto;
 import com.social.moinda.core.domains.meeting.entity.Meeting;
 import com.social.moinda.core.domains.meeting.entity.MeetingQueryRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -57,4 +60,22 @@ public class MeetingQueryServiceTests {
                 .isInstanceOf(NotFoundMeetingException.class)
                 .hasMessageContaining("존재하지 않는 모임입니다.");
     }
+
+    @DisplayName("특정한 그룹내의 모임 전체조회에 성공한다.")
+    @Test
+    void getMeetingsSuccessTest() {
+        // 시작시간, 날짜, 위치, 가격
+        List<MeetingDto> dtoList = List.of(
+                new MeetingDto(1L,"스타벅스 부천점", 5000, LocalDateTime.now()),
+                new MeetingDto(2L, "스타벅스 소사점", 4000, LocalDateTime.now()),
+                new MeetingDto(3L, "스타벅스 상동점", 6000, LocalDateTime.now())
+        );
+
+        given(meetingQueryRepository.findMeetingsByGroupId(anyLong())).willReturn(dtoList);
+
+        meetingQueryService.getMeetings(anyLong());
+
+        then(meetingQueryRepository).should(times(1)).findMeetingsByGroupId(anyLong());
+    }
+
 }
