@@ -4,6 +4,7 @@ import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.meeting.dto.MeetingCreateResponse;
 import com.social.moinda.core.domains.meeting.dto.MeetingDetails;
+import com.social.moinda.core.domains.meeting.dto.MeetingDto;
 import com.social.moinda.core.domains.meetingmember.entity.MeetingMember;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import lombok.AccessLevel;
@@ -73,5 +74,14 @@ public class Meeting extends BaseEntity {
         return this.meetingMember.stream()
                 .map(MeetingMember::convertToMemberDto)
                 .collect(Collectors.toList());
+    }
+
+    public MeetingDto bindToMeetingDto() {
+        return new MeetingDto(
+                this.getId(),
+                this.meetingLocation.getShopName(),
+                this.amount,
+                this.meetingDate
+        );
     }
 }
