@@ -39,7 +39,7 @@ class MemberApiControllerTests extends BaseApiConfig {
     @Test
     void signupSuccessTest() throws Exception {
 
-        SignupRequest createDto = new SignupRequest("user1@email.com", "하하", "12121212", "12121212");
+        SignupRequest createDto = new SignupRequest("user1@email.com", "하하", "안녕하세요", "12121212", "12121212");
 
         mockMvc.perform(post(ApiURLProvider.MEMBER_API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -53,7 +53,7 @@ class MemberApiControllerTests extends BaseApiConfig {
     @Test
     void signupFailTest() throws Exception {
 
-        SignupRequest createDto = new SignupRequest("user1@email.com", "user", "1212", "1212");
+        SignupRequest createDto = new SignupRequest("user1@email.com", "user", "안녕하세요", "1212", "1212");
 
         mockMvc.perform(post(ApiURLProvider.MEMBER_API_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -68,7 +68,7 @@ class MemberApiControllerTests extends BaseApiConfig {
     @Test
     void getMemberDetailsSuccessTest() throws Exception {
 
-        Member member = new Member("user1@email.com", "user1", "12121212");
+        Member member = new Member("user1@email.com", "user1", "안녕하세요", "12121212");
 
         MemberDetails memberDetails = new MemberDetails(member.bindToMemberDto(), List.of(
                 new GroupDto(1L, "그룹1", "부천시", "FREE", 20),

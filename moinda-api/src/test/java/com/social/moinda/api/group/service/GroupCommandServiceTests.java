@@ -69,7 +69,7 @@ class GroupCommandServiceTests {
         );
 
         Group group = groupCreateDto.bindToEntity();
-        Member member = new Member("dssd@dsds.com","dsds","1212", null);
+        Member member = new Member("dssd@dsds.com","dsds","안녕하세요","1212");
         GroupMember groupMember = new GroupMember(group, member);
 
         given(memberQueryRepository.findById(anyLong())).willReturn(Optional.of(member));
@@ -122,7 +122,7 @@ class GroupCommandServiceTests {
                 300
         );
 
-        Member member = new Member("dssd@dsds.com","dsds","1212", null);
+        Member member = new Member("dssd@dsds.com","dsds","안녕하세요","1212");
 
         given(memberQueryRepository.findById(anyLong())).willReturn(Optional.of(member));
         given(groupQueryRepository.existsByName(anyString()))

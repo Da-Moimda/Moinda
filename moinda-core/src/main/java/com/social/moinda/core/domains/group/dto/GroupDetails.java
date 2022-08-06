@@ -21,11 +21,6 @@ public class GroupDetails {
     private List<MemberDto> members;
     private List<MeetingDto> meetings;
 
-    /**
-     *  그룹명, 소개
-     *  모임 목록 -> 모임날짜, 위치, 가격
-     *  그룹 내 가입된 사용자 목록 -> 고유번호, 사용자 이름, 소개(없음),
-     */
     public GroupDetails(Long groupId,
                         String groupName,
                         String groupIntroduce,
