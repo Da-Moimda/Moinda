@@ -4,6 +4,7 @@ import com.social.moinda.api.group.dto.GroupCreateDto;
 import com.social.moinda.api.group.dto.GroupJoinRequest;
 import com.social.moinda.api.group.service.GroupCommandService;
 import com.social.moinda.api.group.service.GroupQueryService;
+import com.social.moinda.core.domains.group.dto.GroupDetails;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.web.ApiURLProvider;
 import com.social.moinda.web.BaseApiConfig;
@@ -13,12 +14,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doAnswer;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -153,6 +155,22 @@ public class GroupApiControllerTests extends BaseApiConfig {
                 .content(toJson(joinRequest)));
 
         perform.andExpect(status().isOk());
+    }
+
+    @DisplayName("특정 그룹에 대한 상세정보 조회에 성공한다.")
+    @Test
+    void getGroupDetailsSuccessTest() throws Exception {
+
+        GroupDetails groupDetails = new GroupDetails(1L, "그룹1", "그룹입니다.",
+                Collections.emptyList(), Collections.emptyList());
+
+        given(groupQueryService.getGroupDetails(anyLong())).willReturn(groupDetails);
+
+        ResultActions perform = mockMvc.perform(get(ApiURLProvider.GROUP_API_URL + "/" + 1L + "/details")
+                .accept(MediaType.APPLICATION_JSON));
+
+        perform.andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON));
     }
 
     private ResultActions getCreateResultActions(GroupCreateDto groupCreateDto) throws Exception {

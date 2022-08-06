@@ -3,12 +3,13 @@ package com.social.moinda.core.domains.member.entity;
 
 import com.social.moinda.core.BaseEntity;
 import com.social.moinda.core.domains.group.dto.GroupDto;
-import com.social.moinda.core.domains.group.dto.Groups;
-import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
 import com.social.moinda.core.domains.member.dto.MemberDto;
 import com.social.moinda.core.domains.member.dto.SignupResponse;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -62,15 +63,9 @@ public class Member extends BaseEntity {
         );
     }
 
-    /**
-     *  TODO : mappingToMemberDtoList처럼 변경 필요
-     *
-     */
     public List<GroupDto> bindToGroupDtoList() {
-        List<Group> groups = this.groupMember.stream()
-                .map(GroupMember::getGroup)
+        return this.groupMember.stream()
+                .map(GroupMember::convertToGroupDto)
                 .collect(Collectors.toList());
-
-        return new Groups(groups).getGroupDtoList();
     }
 }

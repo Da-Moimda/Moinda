@@ -5,6 +5,7 @@ import com.social.moinda.api.group.dto.GroupJoinRequest;
 import com.social.moinda.api.group.service.GroupCommandService;
 import com.social.moinda.api.group.service.GroupQueryService;
 import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
+import com.social.moinda.core.domains.group.dto.GroupDetails;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.dto.GroupJoinResponse;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,12 @@ public class GroupApiController {
     public ResponseEntity<List<GroupDto>> getGroups(@PathVariable String keyword) {
         List<GroupDto> groups = groupQueryService.searchGroups(keyword);
         return ResponseEntity.status(HttpStatus.OK).body(groups);
+    }
+
+    @GetMapping("/{groupId}/details")
+    public ResponseEntity<GroupDetails> getDetails(@PathVariable Long groupId) {
+        GroupDetails groupDetails = groupQueryService.getGroupDetails(groupId);
+        return ResponseEntity.status(HttpStatus.OK).body(groupDetails);
     }
 
 }

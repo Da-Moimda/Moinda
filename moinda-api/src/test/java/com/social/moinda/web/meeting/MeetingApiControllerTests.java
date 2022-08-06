@@ -91,4 +91,6 @@ public class MeetingApiControllerTests extends BaseApiConfig {
 
     }
 
+    // TODO : 그룹 내 모임 전체 목록 보여주는 API 테스트 코드 필요.
+
 }
