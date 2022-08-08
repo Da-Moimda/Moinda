@@ -1,7 +1,6 @@
 package com.social.moinda.core.domains.member.entity;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.social.moinda.core.domains.member.dto.MemberDetails;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -22,13 +21,16 @@ public class MemberQueryRepository extends QuerydslRepositorySupport {
         this.member = QMember.member;
     }
 
-    // 사용자의 정보 조회 -> 가입한 그룹 등등 포함
-    public MemberDetails findMemberDetails(Long memberId) {
-        Member entity = getMember(memberId);
-
-        return new MemberDetails(entity.bindToMemberDto(),entity.bindToGroupDtoList());
+    /**
+     * 본인에 대한 정보를 확인시 사용.
+     */
+    public Optional<Member> findMemberDetailsById(Long memberId) {
+        return Optional.ofNullable(getMember(memberId));
     }
 
+    /**
+     * 다른 비즈니스 로직에서 순수 조회 용도
+     */
     public Optional<Member> findById(Long memberId) {
         return Optional.ofNullable(getMember(memberId));
     }
