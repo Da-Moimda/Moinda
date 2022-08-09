@@ -20,9 +20,9 @@ public class ErrorResponse {
         this.errorMessage = errorMessage;
     }
 
-    public ErrorResponse(ErrorCode errorCode, BindingResult bindingResult) {
-        this.status = errorCode.getStatus();
-        this.errorCode = errorCode.getCode();
+    public ErrorResponse(HttpStatus status, int errorCode, BindingResult bindingResult) {
+        this.status = status;
+        this.errorCode = errorCode;
         this.errorMessage = bindingResult.getFieldError().getDefaultMessage();
     }
 }

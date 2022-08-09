@@ -8,13 +8,11 @@ import com.social.moinda.api.groupmember.exception.AlreadyJoinGroupMemberExcepti
 import com.social.moinda.api.member.exception.NotFoundMemberException;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
-import com.social.moinda.core.domains.group.entity.GroupRepository;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
 import com.social.moinda.core.domains.groupmember.entity.GroupMemberQueryRepository;
 import com.social.moinda.core.domains.groupmember.entity.GroupMemberRepository;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.core.domains.member.entity.MemberQueryRepository;
-import com.social.moinda.core.domains.member.entity.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,13 +34,7 @@ import static org.mockito.Mockito.times;
 class GroupCommandServiceTests {
 
     @Mock
-    private MemberRepository memberRepository;
-
-    @Mock
     private MemberQueryRepository memberQueryRepository;
-
-    @Mock
-    private GroupRepository groupRepository;
 
     @Mock
     private GroupQueryRepository groupQueryRepository;

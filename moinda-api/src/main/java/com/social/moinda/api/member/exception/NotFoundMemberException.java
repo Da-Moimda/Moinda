@@ -14,7 +14,10 @@ public class NotFoundMemberException extends RuntimeException {
         super(message);
     }
 
-    public ErrorResponse getResponse() {
-        return new ErrorResponse(ErrorCode.NOT_VALID_REQUEST_BODY, DEFAULT_ERROR_MESSAGE);
+    public ErrorResponse getErrorResponse() {
+        return new ErrorResponse(
+                ErrorCode.NOT_FOUND_MEMBER,
+                DEFAULT_ERROR_MESSAGE
+        );
     }
 }
