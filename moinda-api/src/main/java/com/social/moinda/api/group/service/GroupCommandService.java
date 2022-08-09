@@ -11,7 +11,6 @@ import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
 import com.social.moinda.core.domains.group.dto.GroupJoinResponse;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
-import com.social.moinda.core.domains.group.entity.GroupRepository;
 import com.social.moinda.core.domains.groupmember.entity.GroupMember;
 import com.social.moinda.core.domains.groupmember.entity.GroupMemberQueryRepository;
 import com.social.moinda.core.domains.groupmember.entity.GroupMemberRepository;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class GroupCommandService {
 
-    private final GroupRepository groupRepository;
     private final GroupQueryRepository groupQueryRepository;
     private final MemberQueryRepository memberQueryRepository;
     private final GroupMemberRepository groupMemberRepository;
@@ -34,7 +32,7 @@ public class GroupCommandService {
 
     public GroupCreateResponse create(GroupCreateDto groupCreateDto) {
         Member member = existMember(groupCreateDto.getMemberId());
-        
+
         existByGroupName(groupCreateDto.getName());
 
         Group group = groupCreateDto.bindToEntity();

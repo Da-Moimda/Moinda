@@ -49,6 +49,7 @@ public class MeetingCommandService {
                 .orElseThrow(NotFoundMeetingException::new);
 
         MeetingMember meetingMember = new MeetingMember(meeting, groupMember.getMember());
+        // TODO : 참가상태 확인필요,
         meetingMemberRepository.save(meetingMember);
     }
 

@@ -18,7 +18,7 @@ public class MemberCommandService {
     private final MemberRepository memberRepository;
 
     public SignupResponse create(SignupRequest dto) {
-
+        System.out.println("create....");
         isExistMember(dto);
 
         Member savedEntity = memberRepository.save(dto.bindEntity());
