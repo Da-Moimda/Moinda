@@ -16,9 +16,6 @@ public class NotFoundGroupException extends RuntimeException {
     }
 
     public ErrorResponse getErrorResponse() {
-        return new ErrorResponse(
-                ErrorCode.NOT_FOUND_GROUP,
-                DEFAULT_ERROR_MESSAGE
-        );
+        return ErrorCode.NOT_FOUND_GROUP.toEntityResponse(DEFAULT_ERROR_MESSAGE);
     }
 }

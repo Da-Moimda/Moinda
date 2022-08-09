@@ -16,9 +16,6 @@ public class NotJoinedGroupMemberException extends RuntimeException {
     }
 
     public ErrorResponse getErrorResponse() {
-        return new ErrorResponse(
-                ErrorCode.NOT_JOINED_GROUP_MEMBER,
-                DEFAULT_ERROR_MESSAGE
-        );
+        return ErrorCode.NOT_JOINED_GROUP_MEMBER.toEntityResponse(DEFAULT_ERROR_MESSAGE);
     }
 }

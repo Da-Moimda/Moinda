@@ -3,26 +3,29 @@ package com.social.moinda.core.exception;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
+
+import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ErrorResponse {
 
-    private HttpStatus status;
-    private int errorCode;
+    private ErrorCode error;
+
+    private int code;
+
     private String errorMessage;
 
-    public ErrorResponse(ErrorCode errorCode, String errorMessage) {
-        this.status = errorCode.getStatus();
-        this.errorCode = errorCode.getCode();
+    public ErrorResponse(ErrorCode error, int code, String errorMessage) {
+        this.error = error;
+        this.code = code;
         this.errorMessage = errorMessage;
     }
 
-    public ErrorResponse(HttpStatus status, int errorCode, BindingResult bindingResult) {
-        this.status = status;
-        this.errorCode = errorCode;
-        this.errorMessage = bindingResult.getFieldError().getDefaultMessage();
+    public ErrorResponse(ErrorCode error, int code, BindingResult bindingResult) {
+        this.error = error;
+        this.code = code;
+        this.errorMessage = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
     }
 }

@@ -16,9 +16,6 @@ public class RegisteredEmailException extends RuntimeException {
     }
 
     public ErrorResponse getErrorResponse() {
-        return new ErrorResponse(
-                ErrorCode.REGISTERED_MEMBER,
-                DEFAULT_ERROR_MESSAGE
-        );
+        return  ErrorCode.REGISTERED_MEMBER.toEntityResponse(DEFAULT_ERROR_MESSAGE);
     }
 }

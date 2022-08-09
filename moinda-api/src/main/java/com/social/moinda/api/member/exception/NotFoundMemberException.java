@@ -15,9 +15,6 @@ public class NotFoundMemberException extends RuntimeException {
     }
 
     public ErrorResponse getErrorResponse() {
-        return new ErrorResponse(
-                ErrorCode.NOT_FOUND_MEMBER,
-                DEFAULT_ERROR_MESSAGE
-        );
+        return ErrorCode.NOT_FOUND_MEMBER.toEntityResponse(DEFAULT_ERROR_MESSAGE);
     }
 }

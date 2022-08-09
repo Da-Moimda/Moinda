@@ -16,9 +16,6 @@ public class NotFoundMeetingException extends RuntimeException {
     }
 
     public ErrorResponse getErrorResponse() {
-        return new ErrorResponse(
-                ErrorCode.NOT_FOUND_MEETING,
-                DEFAULT_ERROR_MESSAGE
-        );
+        return ErrorCode.NOT_FOUND_MEETING.toEntityResponse(DEFAULT_ERROR_MESSAGE);
     }
 }

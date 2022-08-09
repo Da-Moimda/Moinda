@@ -5,6 +5,8 @@ import com.social.moinda.api.member.exception.RegisteredEmailException;
 import com.social.moinda.core.exception.ErrorCode;
 import com.social.moinda.core.exception.ErrorResponse;
 import com.social.moinda.web.member.MemberApiController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,13 +22,13 @@ public class MemberApiControllerAdvice {
     }
 
     @ExceptionHandler(value = NotFoundMemberException.class)
-    public ErrorResponse notFoundMemberExceptionHandler(NotFoundMemberException ex) {
-        return ex.getErrorResponse();
+    public ResponseEntity<ErrorResponse> notFoundMemberExceptionHandler(NotFoundMemberException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getErrorResponse());
     }
 
     @ExceptionHandler(value = RegisteredEmailException.class)
-    public ErrorResponse registeredEmailExceptionHandler(RegisteredEmailException ex) {
-        return ex.getErrorResponse();
+    public ResponseEntity<ErrorResponse> registeredEmailExceptionHandler(RegisteredEmailException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getErrorResponse());
     }
 
 }

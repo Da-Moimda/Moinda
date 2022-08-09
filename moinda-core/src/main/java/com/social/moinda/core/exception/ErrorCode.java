@@ -3,7 +3,6 @@ package com.social.moinda.core.exception;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -11,26 +10,35 @@ import org.springframework.validation.BindingResult;
 public enum ErrorCode {
 
     // TODO : HttpStatus 사용을 유지할지
-    //
-    NOT_VALID_REQUEST_BODY(HttpStatus.BAD_REQUEST, 400),
-    NOT_FOUND_MEMBER(HttpStatus.NOT_FOUND, 404),
-    REGISTERED_MEMBER(HttpStatus.CONFLICT, 409),
-    NOT_FOUND_GROUP(HttpStatus.NOT_FOUND, 404),
-    NOT_FOUND_MEETING(HttpStatus.NOT_FOUND, 404),
-    NOT_JOINED_GROUP_MEMBER(HttpStatus.NOT_FOUND, 404);
+    NOT_VALID_REQUEST_BODY(1000),
+    NOT_FOUND_MEMBER(2000),
+    REGISTERED_MEMBER(2010),
+    NOT_FOUND_GROUP(3000),
+    NOT_FOUND_MEETING(4000),
+    NOT_JOINED_GROUP_MEMBER(5000);
 
-    private HttpStatus status;
     private int code;
 
-    ErrorCode(HttpStatus status, int code) {
-        this.status = status;
+    ErrorCode(int code) {
         this.code = code;
     }
 
     public static ErrorResponse notValidRequestResponse(BindingResult bindingResult) {
+        return NOT_VALID_REQUEST_BODY.toEntityResponse(bindingResult);
+    }
+
+    public ErrorResponse toEntityResponse(final String ERROR_MESSAGE) {
         return new ErrorResponse(
-                NOT_VALID_REQUEST_BODY.status,
-                NOT_VALID_REQUEST_BODY.code,
+                this,
+                this.code,
+                ERROR_MESSAGE
+        );
+    }
+
+    public ErrorResponse toEntityResponse(BindingResult bindingResult) {
+        return new ErrorResponse(
+                this,
+                this.code,
                 bindingResult
         );
     }

@@ -6,6 +6,8 @@ import com.social.moinda.api.meeting.exception.NotFoundMeetingException;
 import com.social.moinda.core.exception.ErrorCode;
 import com.social.moinda.core.exception.ErrorResponse;
 import com.social.moinda.web.meeting.MeetingApiController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,18 +23,18 @@ public class MeetingApiControllerAdvice {
     }
 
     @ExceptionHandler(value = NotFoundMeetingException.class)
-    public ErrorResponse notFoundMeetingExceptionHandler(NotFoundMeetingException ex) {
-        return ex.getErrorResponse();
+    public ResponseEntity<ErrorResponse> notFoundMeetingExceptionHandler(NotFoundMeetingException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getErrorResponse());
     }
 
     @ExceptionHandler(value = NotFoundGroupException.class)
-    public ErrorResponse notFoundGroupExceptionHandler(NotFoundGroupException ex) {
-        return ex.getErrorResponse();
+    public ResponseEntity<ErrorResponse> notFoundGroupExceptionHandler(NotFoundGroupException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getErrorResponse());
     }
 
     @ExceptionHandler(value = NotJoinedGroupMemberException.class)
-    public ErrorResponse notFoundGroupExceptionHandler(NotJoinedGroupMemberException ex) {
-        return ex.getErrorResponse();
+    public ResponseEntity<ErrorResponse> notFoundGroupExceptionHandler(NotJoinedGroupMemberException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getErrorResponse());
     }
 
 }
