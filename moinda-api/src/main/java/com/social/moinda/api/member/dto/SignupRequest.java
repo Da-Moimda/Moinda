@@ -24,10 +24,10 @@ public class SignupRequest {
     @NotNull(message = "자기소개를 입력해주세요.")
     private String introduce;
 
-    @Size(min = 8)
+    @Size(min = 8, message = "비밀번호는 8자리 입력해주세요.")
     private String password;
 
-    @Size(min = 8)
+    @Size(min = 8, message = "2차 비밀번호는 8자리 입력해주세요.")
     private String confirmPassword;
 
     public SignupRequest(String email,
