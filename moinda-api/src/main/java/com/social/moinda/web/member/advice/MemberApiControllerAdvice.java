@@ -17,8 +17,8 @@ public class MemberApiControllerAdvice {
 
     // TODO : 전체적으로 쓸지
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ErrorResponse invalidRequestBodyHandler(BindingResult bindingResult) {
-        return ErrorCode.notValidRequestResponse(bindingResult);
+    public ResponseEntity<ErrorResponse> invalidRequestBodyHandler(BindingResult bindingResult) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorCode.notValidRequestResponse(bindingResult));
     }
 
     @ExceptionHandler(value = NotFoundMemberException.class)
