@@ -1,9 +1,9 @@
 name: Moinda-Github Action CI
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches:
+      - 'feature/**'
+      - 'hotfix/**'
 
 jobs:
   build-pipeline:
