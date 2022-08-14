@@ -1,8 +1,8 @@
 version: '3'
 
 services:
-  moinda-local-db:
-    container_name: moinda-local-db
+  dev-db:
+    container_name: dev-db
     image: mysql:8.0
     environment:
       MYSQL_DATABASE: moinda
@@ -10,12 +10,17 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: moinda
       MYSQL_PASSWORD: moinda
+      TZ: 'Asia/Seoul'
     restart: always
     ports:
-      - 3306:3306
+      - "3306:3306"
+    command:
+      - "mysqld"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
     networks:
-      - moinda-local
+      - dev-db
 
 networks:
-  moinda-local:
+  dev-db:
     driver: bridge
