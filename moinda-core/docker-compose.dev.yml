@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  dev-db:
+    container_name: dev-db
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: moinda
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: moinda
+      MYSQL_PASSWORD: moinda
+      TZ: 'Asia/Seoul'
+    restart: always
+    ports:
+      - "3306:3306"
+    command:
+      - "mysqld"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
+    networks:
+      - dev-db
+
+networks:
+  dev-db:
+    driver: bridge

@@ -24,15 +24,15 @@ Multi Module Project
 ### How to Use
 
 - **API 문서화 필요**
-- Port: 9090
+- Port: 9091
 - Connection Url : moinda-db
 - Database : moinda
 
-```dockerfile
+```shell
 ./gradlew clean build
 ```
 
-```dockerfile
+```shell
 docker-compose up (--build)
 ```
 
