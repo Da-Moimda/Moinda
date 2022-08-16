@@ -1,10 +1,11 @@
 name: Moinda-Github Action CI
 # push : 해당 브랜치에 push하고 병합할 때 동작
-# pull_request : 해당 브랜치로 PR하고 병합할 때 동작
+# pull_request : 해당 브랜치를 가지고 PR을 할 경우 동작
 on:
   pull_request:
     branches:
       - 'hotfix/**'
+      - 'feature/**'
 
 jobs:
   build-pipeline:
