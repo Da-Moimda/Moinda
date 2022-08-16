@@ -4,7 +4,7 @@ name: Moinda-Github Action CI
 on:
   pull_request:
     branches:
-      - 'hotfix/**'
+      - develope
 
 jobs:
   build-pipeline:
