@@ -10,9 +10,14 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: moinda
       MYSQL_PASSWORD: moinda
+      TZ: 'Asia/Seoul'
     restart: always
     ports:
       - "3306:3306"
+    command:
+      - "mysqld"
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_unicode_ci"
     networks:
       - moinda-local
 
