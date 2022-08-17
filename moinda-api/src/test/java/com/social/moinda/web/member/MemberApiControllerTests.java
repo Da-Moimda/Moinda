@@ -5,6 +5,7 @@ import com.social.moinda.api.member.service.MemberCommandService;
 import com.social.moinda.api.member.service.MemberQueryService;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.member.dto.MemberDetails;
+import com.social.moinda.core.domains.member.dto.SignupResponse;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.web.ApiURLProvider;
 import com.social.moinda.web.BaseApiConfig;
@@ -13,12 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.operation.preprocess.Preprocessors;
+import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -41,10 +47,32 @@ class MemberApiControllerTests extends BaseApiConfig {
 
         SignupRequest createDto = new SignupRequest("user1@email.com", "하하", "안녕하세요", "12121212", "12121212");
 
-        mockMvc.perform(post(ApiURLProvider.MEMBER_API_URL)
+        SignupResponse signupResponse = new SignupResponse(1L, "user1@email.com", "하하", "안녕하세요", "12121212");
+
+        given(memberCommandService.create(any(SignupRequest.class))).willReturn(signupResponse);
+
+        mockMvc.perform(RestDocumentationRequestBuilders.post(ApiURLProvider.MEMBER_API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(createDto)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andDo(MockMvcRestDocumentation.document("post-signup",
+                                Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
+                                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                                PayloadDocumentation.requestFields(
+                                        PayloadDocumentation.fieldWithPath("email").description("이메일"),
+                                        PayloadDocumentation.fieldWithPath("name").description("이름"),
+                                        PayloadDocumentation.fieldWithPath("introduce").description("자기소개"),
+                                        PayloadDocumentation.fieldWithPath("password").description("비밀번호"),
+                                        PayloadDocumentation.fieldWithPath("confirmPassword").description("2차 비밀번호")
+                                ),
+                                PayloadDocumentation.responseFields(
+                                        PayloadDocumentation.fieldWithPath("memberId").description("사용자 번호"),
+                                        PayloadDocumentation.fieldWithPath("email").description("이메일"),
+                                        PayloadDocumentation.fieldWithPath("name").description("이름"),
+                                        PayloadDocumentation.fieldWithPath("introduce").description("자기소개")
+                                )
+                        )
+                );
 
         assertThatNoException();
     }

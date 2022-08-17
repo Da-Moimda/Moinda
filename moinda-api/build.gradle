@@ -1,6 +1,6 @@
 plugins {
     id 'jacoco'
-    // Restdocs
+    // Restdocs Gradle 7.0 이상부터 해당 플러그인으로 해야한다.
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
@@ -9,20 +9,35 @@ configurations {
 }
 
 ext {
-    set('snippetsDir', file("build/generated-snippets"))
+    snippetsDir = file('build/generated-snippets')
 }
-// dependsOn test => test 수행 후 해당 Task 진행
-tasks.named('asciidoctor') {
+
+asciidoctor {
     inputs.dir snippetsDir
-    configurations 'asciidoctorEx'
-    dependsOn test // test 수행 후 해당 Task 진행
+    configurations 'asciidoctorExt'
+    dependsOn test
 }
 
 bootJar { // SpringBoot 1.5 이하일 경우 jar
     dependsOn asciidoctor
-    from ("${asciidoctor.outputDir}/html5") {
+    from ("${asciidoctor.outputDir}/html5") { // 운영환경 배포시에는 asciidoctor 태스크를 빼고
         into 'static/docs' // 해당 경로로 복사
     }
+}
+// 문서 수정 후 반영안될 경우 제거 후 생성되게 한다.
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
 }
 
 // exec 'task-test' => moinda-api\build\reports\jacoco\test\html
