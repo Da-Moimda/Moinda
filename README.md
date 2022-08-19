@@ -23,7 +23,6 @@ Multi Module Project
 
 ### How to Use
 
-- **API 문서화 필요**
 - Port: 9091
 - Connection Url : moinda-db
 - Database : moinda
@@ -34,5 +33,12 @@ Multi Module Project
 
 ```shell
 docker-compose up (--build)
+```
+
+### Documentation
+
+- Spring Rest Docs
+```shell
+   localhost:port/docs/index.html
 ```
 
