@@ -11,6 +11,7 @@ import java.util.Objects;
 @Getter
 public class ErrorResponse {
 
+    // TODO : status로 변경
     private ErrorCode error;
 
     private int code;
