@@ -28,24 +28,228 @@ Moinda Spring Rest Docs API
 |===
 
 [[Moinda]]
-== Member 회원 가입
+== Member
 
-=== Request
+=== 회원 가입
+
+==== Request
 
 Request Body:
 
-include::{snippets}/post-signup/request-body.adoc[]
+include::{snippets}/member-api-controller-tests/post_signup/request-body.adoc[]
 
 Request HTTP Example:
 
-include::{snippets}/post-signup/http-request.adoc[]
+include::{snippets}/member-api-controller-tests/post_signup/http-request.adoc[]
 
 === Response
 
 Response Fields:
 
-include::{snippets}/post-signup/response-fields.adoc[]
+include::{snippets}/member-api-controller-tests/post_signup/response-fields.adoc[]
 
 Response HTTP Example:
 
-include::{snippets}/post-signup/http-response.adoc[]
+include::{snippets}/member-api-controller-tests/post_signup/http-response.adoc[]
+
+== Member
+
+=== 조회 ( 가입한 그룹 포함 )
+
+==== Request
+
+Request Body:
+
+include::{snippets}/member-api-controller-tests/get_member_with_group-info/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/member-api-controller-tests/get_member_with_group-info/http-request.adoc[]
+
+=== Response
+
+Response Fields:
+
+include::{snippets}/member-api-controller-tests/get_member_with_group-info/response-fields.adoc[]
+
+Response HTTP Example:
+
+include::{snippets}/member-api-controller-tests/get_member_with_group-info/http-response.adoc[]
+
+== Group
+
+=== 그룹 생성하기
+
+==== Request
+
+Request Body:
+
+include::{snippets}/group-api-controller-tests/post_create_group/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/group-api-controller-tests/post_create_group/http-request.adoc[]
+
+=== Response
+
+Response Fields:
+
+include::{snippets}/group-api-controller-tests/post_create_group/response-fields.adoc[]
+
+Response HTTP Example:
+
+include::{snippets}/group-api-controller-tests/post_create_group/http-response.adoc[]
+
+=== 그룹 가입하기
+
+==== Request
+
+Request Body:
+
+include::{snippets}/group-api-controller-tests/post_join_group/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/group-api-controller-tests/post_join_group/http-request.adoc[]
+
+=== Response
+
+Response Fields:
+
+include::{snippets}/group-api-controller-tests/post_join_group/response-fields.adoc[]
+
+Response HTTP Example:
+
+include::{snippets}/group-api-controller-tests/post_join_group/http-response.adoc[]
+
+=== 전체 그룹 조회
+
+==== Request
+
+Request Body:
+
+include::{snippets}/group-api-controller-tests/get_find_groups/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/group-api-controller-tests/get_find_groups/http-request.adoc[]
+
+=== Response
+
+Response Fields:
+
+include::{snippets}/group-api-controller-tests/get_find_groups/response-fields.adoc[]
+
+Response HTTP Example:
+
+include::{snippets}/group-api-controller-tests/get_find_groups/http-response.adoc[]
+
+=== 특정 모임 검색
+
+==== Request
+
+Request Body:
+
+include::{snippets}/group-api-controller-tests/get_find_groups_by_search/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/group-api-controller-tests/get_find_groups_by_search/http-request.adoc[]
+
+=== Response
+
+Response Fields:
+
+include::{snippets}/group-api-controller-tests/get_find_groups_by_search/response-fields.adoc[]
+
+Response HTTP Example:
+
+include::{snippets}/group-api-controller-tests/get_find_groups_by_search/http-response.adoc[]
+
+=== 특정 모임 상세조회
+
+==== Request
+
+Request Body:
+
+include::{snippets}/group-api-controller-tests/get_group_details/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/group-api-controller-tests/get_group_details/http-request.adoc[]
+
+=== Response
+
+Response Fields:
+
+include::{snippets}/group-api-controller-tests/get_group_details/response-fields.adoc[]
+
+Response HTTP Example:
+
+include::{snippets}/group-api-controller-tests/get_group_details/http-response.adoc[]
+
+
+== Meeting
+
+=== 모임 생성하기
+
+==== Request
+
+Request Body:
+
+include::{snippets}/meeting-api-controller-tests/post_create_meeting/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/meeting-api-controller-tests/post_create_meeting/http-request.adoc[]
+
+=== Response
+
+Response Fields:
+
+include::{snippets}/meeting-api-controller-tests/post_create_meeting/response-fields.adoc[]
+
+Response HTTP Example:
+
+include::{snippets}/meeting-api-controller-tests/post_create_meeting/http-response.adoc[]
+
+=== 모임 가입하기
+
+==== Request
+
+Request Body:
+
+include::{snippets}/meeting-api-controller-tests/post_join_meeting/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/meeting-api-controller-tests/post_join_meeting/http-request.adoc[]
+
+=== Response
+
+Response HTTP Example:
+
+include::{snippets}/meeting-api-controller-tests/post_join_meeting/http-response.adoc[]
+
+
+=== 모임 상세조회
+
+==== Request
+
+Request Body:
+
+include::{snippets}/meeting-api-controller-tests/get_meeting_details/request-body.adoc[]
+
+Request HTTP Example:
+
+include::{snippets}/meeting-api-controller-tests/get_meeting_details/http-request.adoc[]
+
+=== Response
+
+Response Fields:
+
+include::{snippets}/meeting-api-controller-tests/get_meeting_details/response-fields.adoc[]
+
+Response HTTP Example:
+
+include::{snippets}/meeting-api-controller-tests/get_meeting_details/http-response.adoc[]
