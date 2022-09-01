@@ -4,6 +4,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.member.entity.Member;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
@@ -43,6 +45,10 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
                 .fetch();
 
         return bindToDtoList(groups);
+    }
+
+    public Page<GroupDto> findGroupsWithPaging(Pageable pageable) {
+        return null;
     }
 
     public List<GroupDto> findAllByNameContains(String keyword) {
