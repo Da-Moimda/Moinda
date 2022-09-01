@@ -102,13 +102,6 @@ public class GroupQueryServiceTests {
     @DisplayName("전체 모임 목록 페이징 처리 하기")
     @Test
     void getGroupsWithPagingTest() {
-
-        /*
-            1. 40개의 그룹이 있다.
-            2. 최근에 생성된 그룹이 먼저 나온다.
-            3. 10개 단위로 끊어서 나온다.
-            4. 첫번쨰 페이지(31~40)에 있는 그룹목록이 표시된다.
-         */
         List<GroupDto> dtoList = LongStream.rangeClosed(1, 40)
                 .mapToObj(idx ->
                         new GroupDto(idx, "그룹" + idx, "부천시", "FREE", 30))
@@ -118,10 +111,12 @@ public class GroupQueryServiceTests {
         PageRequest pageable = PageRequest.of(1, 10, Sort.by("groupId").descending());
         Page<GroupDto> groupDtos = new PageImpl<>(dtoList, pageable, dtoList.size());
 
-        given(groupQueryRepository.findGroupsWithPaging(any(Pageable.class))).willReturn(groupDtos);
+        given(groupQueryRepository.findGroupsWithPaging(any(Pageable.class)))
+                .willReturn(groupDtos);
 
         Page<GroupDto> groupDtoPage = groupQueryService.displayGroupsWithPaging(pageable);
 
         assertThat(dtoList.size()).isEqualTo(groupDtoPage.getTotalElements());
+        assertThat(groupDtoPage.getSort().getOrderFor("groupId").isDescending()).isTrue();
     }
 }

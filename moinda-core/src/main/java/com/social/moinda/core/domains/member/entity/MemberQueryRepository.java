@@ -35,6 +35,7 @@ public class MemberQueryRepository extends QuerydslRepositorySupport {
         return Optional.ofNullable(getMember(memberId));
     }
 
+    // TODO : 데이터를 가져오기위한 조회 와 존재유무를 판단하기 위한 조회에 대한 쿼리를 분리하자.
     private Member getMember(Long memberId) {
         return jpaQueryFactory
                 .selectFrom(member).distinct()

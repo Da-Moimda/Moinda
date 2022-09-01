@@ -41,6 +41,6 @@ public class GroupQueryService {
     }
 
     public Page<GroupDto> displayGroupsWithPaging(Pageable pageable) {
-        return null;
+        return groupQueryRepository.findGroupsWithPaging(pageable);
     }
 }

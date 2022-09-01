@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.member.entity.Member;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -41,20 +42,32 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
     public List<GroupDto> findGroups() {
         List<Group> groups = jpaQueryFactory.selectFrom(group).distinct()
                 .leftJoin(group.groupMember, groupMember).fetchJoin()
-                .where(group.id.eq(groupMember.group.id))
+                .leftJoin(groupMember.member, member).fetchJoin()
                 .fetch();
 
         return bindToDtoList(groups);
     }
 
     public Page<GroupDto> findGroupsWithPaging(Pageable pageable) {
-        return null;
+        List<Group> groups = jpaQueryFactory.selectFrom(group)
+                .leftJoin(group.groupMember, groupMember).fetchJoin()
+                .leftJoin(groupMember.member, member).fetchJoin()
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        // fetchCount() - Deprecated
+        List<GroupDto> groupDtos = bindToDtoList(groups);
+        long total = groups.size();
+
+        return new PageImpl<>(groupDtos, pageable, total);
     }
 
     public List<GroupDto> findAllByNameContains(String keyword) {
 
         List<Group> groups = jpaQueryFactory.selectFrom(group).distinct()
                 .leftJoin(group.groupMember, groupMember).fetchJoin()
+                .leftJoin(groupMember.member, member).fetchJoin()
                 .where(group.id.eq(groupMember.group.id))
                 .where(containGroup(keyword))
                 .fetch();
