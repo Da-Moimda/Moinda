@@ -1,5 +1,6 @@
 package com.social.moinda.core.domains.group.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -13,8 +14,7 @@ public class GroupDto {
     private String concern;
     private int userNum;
 
-    // TODO : 가입한 인원을 표시해야 함.
-
+    @QueryProjection
     public GroupDto(Long groupId, String groupName, String locationSi, String concern, int userNum) {
         this.groupId = groupId;
         this.groupName = groupName;

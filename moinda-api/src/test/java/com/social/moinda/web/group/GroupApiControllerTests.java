@@ -15,11 +15,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.*;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 import static com.social.moinda.web.RestDocsConfig.field;
 import static org.mockito.ArgumentMatchers.*;
@@ -84,7 +88,6 @@ public class GroupApiControllerTests extends BaseApiConfig {
                 );
     }
 
-    // TODO : 테스트 코드 Rest Docs 마저 작성하기
     @DisplayName("전체 그룹 목록 조회에 성공한다.")
     @Test
     void get_find_groups() throws Exception {
@@ -124,7 +127,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
 
         given(groupQueryService.searchGroups(anyString())).willReturn(dtoList);
 
-        ResultActions perform = mockMvc.perform(get(ApiURLProvider.GROUP_API_URL + "/"+ "부천"));
+        ResultActions perform = mockMvc.perform(get(ApiURLProvider.GROUP_API_URL + "/" + "부천"));
 
         perform.andExpect(status().is2xxSuccessful())
                 .andExpect(content().json(toJson(dtoList)))
@@ -190,6 +193,44 @@ public class GroupApiControllerTests extends BaseApiConfig {
                                         fieldWithPath("groupIntroduce").description("그룹 소개"),
                                         fieldWithPath("members[]").description("그룹 멤버"),
                                         fieldWithPath("meetings[]").description("모임 목록")
+                                )
+                        )
+                );
+    }
+
+    // TODO : 미완성된 테스트 코드
+    @DisplayName("페이징된 전체 그룹목록들을 가져온다.")
+    @Test
+    void get_groups_with_paging() throws Exception {
+
+        List<GroupDto> dtoList = LongStream.rangeClosed(1, 40)
+                .mapToObj(idx ->
+                        new GroupDto(idx, "그룹" + idx, "부천시", "FREE", 30))
+                .sorted(Comparator.comparing(GroupDto::getGroupId).reversed())
+                .collect(Collectors.toList());
+
+        PageRequest pageable = PageRequest.of(1, 10, Sort.by("groupId").descending());
+        Page<GroupDto> groupDtos = new PageImpl<>(dtoList, pageable, dtoList.size());
+
+        given(groupQueryService.displayGroupsWithPaging(any(Pageable.class)))
+                .willReturn(groupDtos);
+
+        ResultActions perform = mockMvc.perform(
+                get(ApiURLProvider.GROUP_API_URL+"/page")
+                        .param("page", "1")
+                        .param("size", "10")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        perform.andExpect(status().isOk())
+                .andDo(restDocs.document(
+                                // TODO : to required PathParameter Description
+                                // TODO : Page 객체가 나오고 있으므로 수정이 필요함.
+                                responseFields(
+                                        fieldWithPath("[].groupId").description("그룹 번호"),
+                                        fieldWithPath("[].groupName").description("그룹명"),
+                                        fieldWithPath("[].locationSi").description("그룹 위치1"),
+                                        fieldWithPath("[].concern").description("그룹 주제"),
+                                        fieldWithPath("[].userNum").description("최대 인원 수")
                                 )
                         )
                 );

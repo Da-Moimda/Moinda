@@ -9,6 +9,8 @@ import com.social.moinda.core.domains.group.dto.GroupDetails;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.dto.GroupJoinResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -39,6 +41,19 @@ public class GroupApiController {
     @GetMapping("")
     public ResponseEntity<List<GroupDto>> getGroups() {
         List<GroupDto> groups = groupQueryService.searchGroups();
+        return ResponseEntity.status(HttpStatus.OK).body(groups);
+    }
+
+    /*
+        TODO :
+         Page 객체를 그대로 줄 경우 Page가 가진 Property를 전부 전달해준다.
+         직접 받지 않고 DTO로 바꿔서 받아보기.
+     */
+
+    @GetMapping("/page")
+    public ResponseEntity<Page<GroupDto>> getGroups(Pageable pageable) {
+        System.out.println("pageable : " + pageable);
+        Page<GroupDto> groups = groupQueryService.displayGroupsWithPaging(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(groups);
     }
 

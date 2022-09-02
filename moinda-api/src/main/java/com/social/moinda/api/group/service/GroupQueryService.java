@@ -8,6 +8,8 @@ import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
 import com.social.moinda.core.domains.meeting.dto.MeetingDto;
 import com.social.moinda.core.domains.meeting.entity.MeetingQueryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,5 +38,9 @@ public class GroupQueryService {
         List<MeetingDto> meetings = meetingQueryRepository.findMeetingsByGroupId(groupId);
 
         return group.bindToGroupDetails(meetings);
+    }
+
+    public Page<GroupDto> displayGroupsWithPaging(Pageable pageable) {
+        return groupQueryRepository.findGroupsWithPaging(pageable);
     }
 }

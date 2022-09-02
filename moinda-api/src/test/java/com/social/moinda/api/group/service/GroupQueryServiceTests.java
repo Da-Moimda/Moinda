@@ -13,10 +13,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -93,5 +97,26 @@ public class GroupQueryServiceTests {
 
         then(groupQueryRepository).should(times(1)).findById(anyLong());
         then(meetingQueryRepository).should(times(1)).findMeetingsByGroupId(anyLong());
+    }
+
+    @DisplayName("전체 모임 목록 페이징 처리 하기")
+    @Test
+    void getGroupsWithPagingTest() {
+        List<GroupDto> dtoList = LongStream.rangeClosed(1, 40)
+                .mapToObj(idx ->
+                        new GroupDto(idx, "그룹" + idx, "부천시", "FREE", 30))
+                .sorted(Comparator.comparing(GroupDto::getGroupId).reversed())
+                .collect(Collectors.toList());
+
+        PageRequest pageable = PageRequest.of(1, 10, Sort.by("groupId").descending());
+        Page<GroupDto> groupDtos = new PageImpl<>(dtoList, pageable, dtoList.size());
+
+        given(groupQueryRepository.findGroupsWithPaging(any(Pageable.class)))
+                .willReturn(groupDtos);
+
+        Page<GroupDto> groupDtoPage = groupQueryService.displayGroupsWithPaging(pageable);
+
+        assertThat(dtoList.size()).isEqualTo(groupDtoPage.getTotalElements());
+        assertThat(groupDtoPage.getSort().getOrderFor("groupId").isDescending()).isTrue();
     }
 }
