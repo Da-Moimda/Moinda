@@ -224,6 +224,7 @@ public class GroupApiControllerTests extends BaseApiConfig {
         perform.andExpect(status().isOk())
                 .andDo(restDocs.document(
                                 // TODO : to required PathParameter Description
+                                // TODO : Page 객체가 나오고 있으므로 수정이 필요함.
                                 responseFields(
                                         fieldWithPath("[].groupId").description("그룹 번호"),
                                         fieldWithPath("[].groupName").description("그룹명"),
