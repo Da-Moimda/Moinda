@@ -1,16 +1,16 @@
 package com.social.moinda.api.group.service;
 
 import com.social.moinda.api.group.exception.NotFoundGroupException;
-import com.social.moinda.api.pagination.PagingRequest;
 import com.social.moinda.core.domains.group.dto.GroupDetails;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.entity.Group;
 import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
 import com.social.moinda.core.domains.meeting.dto.MeetingDto;
 import com.social.moinda.core.domains.meeting.entity.MeetingQueryRepository;
+import com.social.moinda.core.domains.pagination.PagingRequest;
+import com.social.moinda.core.domains.pagination.PagingResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,11 +41,10 @@ public class GroupQueryService {
         return group.bindToGroupDetails(meetings);
     }
 
-    public Page<GroupDto> displayGroupsWithPaging(Pageable pageable) {
-        return groupQueryRepository.findGroupsWithPaging(pageable);
-    }
+    public PagingResult<GroupDto> displayGroupsWithPaging(PagingRequest pagingRequest) {
 
-    public Page<GroupDto> displayGroupsWithPaging(PagingRequest pagingRequest) {
-        return groupQueryRepository.findGroupsWithPagingCustom(pagingRequest.getPageable());
+        Page<GroupDto> groupsWithPagingCustom = groupQueryRepository.findGroupsWithPagingCustom(pagingRequest);
+
+        return new PagingResult<>(groupsWithPagingCustom);
     }
 }

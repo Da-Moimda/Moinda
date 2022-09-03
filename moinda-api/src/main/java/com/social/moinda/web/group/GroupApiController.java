@@ -8,9 +8,9 @@ import com.social.moinda.core.domains.group.dto.GroupCreateResponse;
 import com.social.moinda.core.domains.group.dto.GroupDetails;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.dto.GroupJoinResponse;
+import com.social.moinda.core.domains.pagination.PagingRequest;
+import com.social.moinda.core.domains.pagination.PagingResult;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -44,16 +44,10 @@ public class GroupApiController {
         return ResponseEntity.status(HttpStatus.OK).body(groups);
     }
 
-    /*
-        TODO :
-         Page 객체를 그대로 줄 경우 Page가 가진 Property를 전부 전달해준다.
-         직접 받지 않고 DTO로 바꿔서 받아보기.
-     */
-
     @GetMapping("/page")
-    public ResponseEntity<Page<GroupDto>> getGroups(Pageable pageable) {
-        Page<GroupDto> groups = groupQueryService.displayGroupsWithPaging(pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(groups);
+    public ResponseEntity<PagingResult<GroupDto>> getGroups(PagingRequest pagingRequest) {
+        PagingResult<GroupDto> pagingResult = groupQueryService.displayGroupsWithPaging(pagingRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(pagingResult);
     }
 
     // TODO : Postman 관련 에러가 조금 있는듯한?

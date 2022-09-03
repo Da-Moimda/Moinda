@@ -1,6 +1,6 @@
 package com.social.moinda.api.group.service;
 
-import com.social.moinda.api.pagination.PagingRequest;
+import com.social.moinda.core.domains.pagination.PagingRequest;
 import com.social.moinda.core.domains.group.dto.GroupDetails;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.entity.Group;
@@ -8,6 +8,7 @@ import com.social.moinda.core.domains.group.entity.GroupQueryRepository;
 import com.social.moinda.core.domains.meeting.dto.MeetingDto;
 import com.social.moinda.core.domains.meeting.entity.MeetingQueryRepository;
 import com.social.moinda.core.domains.member.dto.MemberDto;
+import com.social.moinda.core.domains.pagination.PagingResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -102,27 +103,6 @@ public class GroupQueryServiceTests {
 
     @DisplayName("전체 모임 목록 페이징 처리 하기")
     @Test
-    void getGroupsWithPagingTest() {
-        List<GroupDto> dtoList = LongStream.rangeClosed(1, 40)
-                .mapToObj(idx ->
-                        new GroupDto(idx, "그룹" + idx, "부천시", "FREE", 30))
-                .sorted(Comparator.comparing(GroupDto::getGroupId).reversed())
-                .collect(Collectors.toList());
-
-        PageRequest pageable = PageRequest.of(1, 10, Sort.by("groupId").descending());
-        Page<GroupDto> groupDtos = new PageImpl<>(dtoList, pageable, dtoList.size());
-
-        given(groupQueryRepository.findGroupsWithPaging(any(Pageable.class)))
-                .willReturn(groupDtos);
-
-        Page<GroupDto> groupDtoPage = groupQueryService.displayGroupsWithPaging(pageable);
-
-        assertThat(dtoList.size()).isEqualTo(groupDtoPage.getTotalElements());
-        assertThat(groupDtoPage.getSort().getOrderFor("groupId").isDescending()).isTrue();
-    }
-
-    @DisplayName("전체 모임 목록 페이징 처리 하기")
-    @Test
     void getGroupsWithPagingCustomTest() {
         /*
             1. PageRequest 관련 DTO를 받는다.
@@ -137,15 +117,23 @@ public class GroupQueryServiceTests {
                 .sorted(Comparator.comparing(GroupDto::getGroupId).reversed())
                 .collect(Collectors.toList());
 
-        PagingRequest pagingRequest = new PagingRequest();
+        final int page = 1;
+        final int size = 10;
+
+        PagingRequest pagingRequest = new PagingRequest(page, size, "groupId");
         Page<GroupDto> dtoPage = new PageImpl<>(dtoList, pagingRequest.getPageable(), dtoList.size());
 
-        given(groupQueryRepository.findGroupsWithPagingCustom(any(Pageable.class)))
+        given(groupQueryRepository.findGroupsWithPagingCustom(any(PagingRequest.class)))
                 .willReturn(dtoPage);
 
-        groupQueryService.displayGroupsWithPaging(pagingRequest);
+        PagingResult<GroupDto> pagingResult = groupQueryService.displayGroupsWithPaging(pagingRequest);
+
+        System.out.println("pagingResult : " + pagingResult);
 
         then(groupQueryRepository).should(times(1))
-                .findGroupsWithPagingCustom(any(Pageable.class));
+                .findGroupsWithPagingCustom(any(PagingRequest.class));
+
+        assertThat(pagingResult.getPage()).isEqualTo(page);
+        assertThat(pagingResult.getSize()).isEqualTo(size);
     }
 }

@@ -9,13 +9,16 @@ import com.social.moinda.core.domains.group.dto.GroupDetails;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.dto.GroupJoinResponse;
 import com.social.moinda.core.domains.member.dto.MemberDto;
+import com.social.moinda.core.domains.pagination.PagingRequest;
+import com.social.moinda.core.domains.pagination.PagingResult;
 import com.social.moinda.web.ApiURLProvider;
 import com.social.moinda.web.BaseApiConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -28,9 +31,11 @@ import java.util.stream.LongStream;
 import static com.social.moinda.web.RestDocsConfig.field;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -198,7 +203,6 @@ public class GroupApiControllerTests extends BaseApiConfig {
                 );
     }
 
-    // TODO : 미완성된 테스트 코드
     @DisplayName("페이징된 전체 그룹목록들을 가져온다.")
     @Test
     void get_groups_with_paging() throws Exception {
@@ -209,28 +213,42 @@ public class GroupApiControllerTests extends BaseApiConfig {
                 .sorted(Comparator.comparing(GroupDto::getGroupId).reversed())
                 .collect(Collectors.toList());
 
-        PageRequest pageable = PageRequest.of(1, 10, Sort.by("groupId").descending());
-        Page<GroupDto> groupDtos = new PageImpl<>(dtoList, pageable, dtoList.size());
+        PagingRequest pagingRequest = new PagingRequest(1, 10, null);
 
-        given(groupQueryService.displayGroupsWithPaging(any(Pageable.class)))
-                .willReturn(groupDtos);
+        Page<GroupDto> groupDtos = new PageImpl<>(dtoList, pagingRequest.getPageable(), dtoList.size());
+
+        PagingResult<GroupDto> pagingResult = new PagingResult<>(groupDtos);
+
+        given(groupQueryService.displayGroupsWithPaging(any(PagingRequest.class)))
+                .willReturn(pagingResult);
 
         ResultActions perform = mockMvc.perform(
-                get(ApiURLProvider.GROUP_API_URL+"/page")
+                get(ApiURLProvider.GROUP_API_URL + "/page")
                         .param("page", "1")
                         .param("size", "10")
-                .contentType(MediaType.APPLICATION_JSON));
+                        .contentType(MediaType.APPLICATION_JSON));
 
         perform.andExpect(status().isOk())
                 .andDo(restDocs.document(
-                                // TODO : to required PathParameter Description
-                                // TODO : Page 객체가 나오고 있으므로 수정이 필요함.
+                                requestParameters(
+                                        parameterWithName("page").description("페이지 번호"),
+                                        parameterWithName("size").description("표시될 목록 개수"),
+                                        parameterWithName("search").description("검색어").optional()
+                                ),
                                 responseFields(
-                                        fieldWithPath("[].groupId").description("그룹 번호"),
-                                        fieldWithPath("[].groupName").description("그룹명"),
-                                        fieldWithPath("[].locationSi").description("그룹 위치1"),
-                                        fieldWithPath("[].concern").description("그룹 주제"),
-                                        fieldWithPath("[].userNum").description("최대 인원 수")
+                                        fieldWithPath("dtoList[].groupId").description("그룹 번호"),
+                                        fieldWithPath("dtoList[].groupName").description("그룹명"),
+                                        fieldWithPath("dtoList[].locationSi").description("그룹 위치1"),
+                                        fieldWithPath("dtoList[].concern").description("그룹 주제"),
+                                        fieldWithPath("dtoList[].userNum").description("최대 인원 수"),
+                                        fieldWithPath("totalPage").description("전체 페이지 수"),
+                                        fieldWithPath("page").description("현재 페이지"),
+                                        fieldWithPath("size").description("페이지 내 표시되는 목록 개수"),
+                                        fieldWithPath("start").description("페이지 목록에 표시될 첫 번째 값"),
+                                        fieldWithPath("end").description("페이지 목록에 표시될 마지막 값"),
+                                        fieldWithPath("prev").description("이전 버튼 활성화 여부"),
+                                        fieldWithPath("next").description("다음 버튼 활성화 여부"),
+                                        fieldWithPath("pageList[]").description("화면에 표시될 페이지 목록")
                                 )
                         )
                 );

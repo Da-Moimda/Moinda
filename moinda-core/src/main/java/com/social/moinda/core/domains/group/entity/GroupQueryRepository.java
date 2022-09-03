@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.dto.QGroupDto;
 import com.social.moinda.core.domains.member.entity.Member;
+import com.social.moinda.core.domains.pagination.PagingRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +51,10 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
         return bindToDtoList(groups);
     }
 
-    public Page<GroupDto> findGroupsWithPaging(Pageable pageable) {
+    public Page<GroupDto> findGroupsWithPagingCustom(PagingRequest pagingRequest) {
+
+        Pageable pageable = pagingRequest.getPageable();
+
         List<GroupDto> groups = jpaQueryFactory.selectFrom(group)
                 .leftJoin(group.groupMember, groupMember)
                 .leftJoin(groupMember.member, member)
@@ -61,33 +65,8 @@ public class GroupQueryRepository extends QuerydslRepositorySupport {
                         1. DTO로 변환해서 반환하는 방법.
                         2. ManyToOne의 주체에서 쿼리하는 방법.
                  */
-                .transform(
-                        GroupBy.groupBy(group.id)
-                                .list(new QGroupDto(
-                                        group.id,
-                                        group.name,
-                                        group.location.locationSi,
-                                        group.concern.stringValue(),
-                                        group.groupMember.size()
-                                        ))
-                );
-
-        long total = groups.size();
-
-        return new PageImpl<>(groups, pageable, total);
-    }
-
-    public Page<GroupDto> findGroupsWithPagingCustom(Pageable pageable) {
-        List<GroupDto> groups = jpaQueryFactory.selectFrom(group)
-                .leftJoin(group.groupMember, groupMember)
-                .leftJoin(groupMember.member, member)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                /*
-                        firstResult/maxResults specified with collection fetch; applying in memory!
-                        1. DTO로 변환해서 반환하는 방법.
-                        2. ManyToOne의 주체에서 쿼리하는 방법.
-                 */
+                .orderBy(group.id.desc())
+                .where(containGroupName(pagingRequest.getSearch()))
                 .transform(
                         GroupBy.groupBy(group.id)
                                 .list(new QGroupDto(
