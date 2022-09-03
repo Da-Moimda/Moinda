@@ -1,6 +1,7 @@
 package com.social.moinda.api.group.service;
 
 import com.social.moinda.api.group.exception.NotFoundGroupException;
+import com.social.moinda.api.pagination.PagingRequest;
 import com.social.moinda.core.domains.group.dto.GroupDetails;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.entity.Group;
@@ -42,5 +43,9 @@ public class GroupQueryService {
 
     public Page<GroupDto> displayGroupsWithPaging(Pageable pageable) {
         return groupQueryRepository.findGroupsWithPaging(pageable);
+    }
+
+    public Page<GroupDto> displayGroupsWithPaging(PagingRequest pagingRequest) {
+        return groupQueryRepository.findGroupsWithPagingCustom(pagingRequest.getPageable());
     }
 }

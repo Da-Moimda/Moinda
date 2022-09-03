@@ -52,7 +52,6 @@ public class GroupApiController {
 
     @GetMapping("/page")
     public ResponseEntity<Page<GroupDto>> getGroups(Pageable pageable) {
-        System.out.println("pageable : " + pageable);
         Page<GroupDto> groups = groupQueryService.displayGroupsWithPaging(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(groups);
     }

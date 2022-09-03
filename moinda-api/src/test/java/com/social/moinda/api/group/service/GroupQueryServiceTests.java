@@ -1,5 +1,6 @@
 package com.social.moinda.api.group.service;
 
+import com.social.moinda.api.pagination.PagingRequest;
 import com.social.moinda.core.domains.group.dto.GroupDetails;
 import com.social.moinda.core.domains.group.dto.GroupDto;
 import com.social.moinda.core.domains.group.entity.Group;
@@ -118,5 +119,33 @@ public class GroupQueryServiceTests {
 
         assertThat(dtoList.size()).isEqualTo(groupDtoPage.getTotalElements());
         assertThat(groupDtoPage.getSort().getOrderFor("groupId").isDescending()).isTrue();
+    }
+
+    @DisplayName("전체 모임 목록 페이징 처리 하기")
+    @Test
+    void getGroupsWithPagingCustomTest() {
+        /*
+            1. PageRequest 관련 DTO를 받는다.
+            2. PageRequest에 Pageable 관련 객체를 만든다.
+            3. 조회시 Pagealbe을 통해서 페이징관련 목록을 받는다.
+            4. 서비스 계층에서 변환시킨다?
+         */
+
+        List<GroupDto> dtoList = LongStream.rangeClosed(1, 40)
+                .mapToObj(idx ->
+                        new GroupDto(idx, "그룹" + idx, "부천시", "FREE", 30))
+                .sorted(Comparator.comparing(GroupDto::getGroupId).reversed())
+                .collect(Collectors.toList());
+
+        PagingRequest pagingRequest = new PagingRequest();
+        Page<GroupDto> dtoPage = new PageImpl<>(dtoList, pagingRequest.getPageable(), dtoList.size());
+
+        given(groupQueryRepository.findGroupsWithPagingCustom(any(Pageable.class)))
+                .willReturn(dtoPage);
+
+        groupQueryService.displayGroupsWithPaging(pagingRequest);
+
+        then(groupQueryRepository).should(times(1))
+                .findGroupsWithPagingCustom(any(Pageable.class));
     }
 }
