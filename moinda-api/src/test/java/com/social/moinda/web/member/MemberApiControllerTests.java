@@ -10,13 +10,20 @@ import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.web.ApiURLProvider;
 import com.social.moinda.web.BaseApiConfig;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.social.moinda.web.RestDocsConfig.field;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -37,6 +44,19 @@ class MemberApiControllerTests extends BaseApiConfig {
 
     @MockBean
     private MemberQueryService memberQueryService;
+
+    static class EmailSourceOutOfRange implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(
+                    Arguments.of((Object)null),
+                    Arguments.of(""),
+                    Arguments.of("\t"),
+                    Arguments.of("\n"),
+                    Arguments.of("user1")
+            );
+        }
+    }
 
     @DisplayName("회원가입 성공 테스트")
     @Test
@@ -107,4 +127,24 @@ class MemberApiControllerTests extends BaseApiConfig {
                         )
                 );
     }
+
+    @Nested
+    @DisplayName("회원가입을 할 때")
+    class whileCreateSignup {
+
+        @DisplayName("이메일 형식이 아니여서 실패한다.")
+        @ParameterizedTest
+        @ArgumentsSource(EmailSourceOutOfRange.class)
+        void not_valid_type_email(String email) throws Exception {
+
+            SignupRequest createDto = new SignupRequest(email, "하하", "안녕하세요", "12121212", "12121212");
+
+            ResultActions perform = mockMvc.perform(post(ApiURLProvider.MEMBER_API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(createDto)));
+
+            perform.andExpect(status().isBadRequest());
+        }
+    }
+
 }

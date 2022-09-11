@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 public class SignupRequest {
 
     @Email(message = "이메일 형식이 아닙니다.")
+    @NotBlank(message = "이메일 형식이 아닙니다.")
     private String email;
 
     @NotBlank(message = "이름을 입력해주세요.")
