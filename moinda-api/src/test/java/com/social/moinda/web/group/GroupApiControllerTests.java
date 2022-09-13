@@ -14,7 +14,12 @@ import com.social.moinda.core.domains.pagination.PagingResult;
 import com.social.moinda.web.ApiURLProvider;
 import com.social.moinda.web.BaseApiConfig;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -27,6 +32,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import static com.social.moinda.web.RestDocsConfig.field;
 import static org.mockito.ArgumentMatchers.*;
@@ -252,5 +258,116 @@ public class GroupApiControllerTests extends BaseApiConfig {
                                 )
                         )
                 );
+    }
+
+    @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+    @Nested
+    @DisplayName("그룹을 생성 할 때")
+    class whenCreateGroup {
+
+        @ParameterizedTest
+        @DisplayName("사용자 번호가 없으면 실패한다.")
+        @MethodSource("inValidMemberId")
+        void no_have_memberId(Long memberId) throws Exception {
+            GroupCreateDto groupCreateDto = new GroupCreateDto(memberId, "그룹1", "어서오세요?"
+                    , "경기도", "부천시", "FREE", 30);
+
+            ResultActions perform = mockMvc.perform(post(ApiURLProvider.GROUP_API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(groupCreateDto)));
+
+            perform.andExpect(status().isBadRequest());
+        }
+
+        @ParameterizedTest
+        @DisplayName("그룹명이 비었으면 실패한다.")
+        @MethodSource("inValidGroupObject")
+        void no_have_group_name(String groupName) throws Exception {
+            GroupCreateDto groupCreateDto = new GroupCreateDto(1L, groupName, "어서오세요?"
+                    , "경기도", "부천시", "FREE", 30);
+
+            ResultActions perform = mockMvc.perform(post(ApiURLProvider.GROUP_API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(groupCreateDto)));
+
+            perform.andExpect(status().isBadRequest());
+        }
+
+        @ParameterizedTest
+        @DisplayName("그룹 소개가 비었으면 실패한다.")
+        @MethodSource("inValidGroupObject")
+        void no_have_group_introduce(String groupIntroduce) throws Exception {
+            GroupCreateDto groupCreateDto = new GroupCreateDto(1L, "그룹1", groupIntroduce
+                    , "경기도", "부천시", "FREE", 30);
+
+            ResultActions perform = mockMvc.perform(post(ApiURLProvider.GROUP_API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(groupCreateDto)));
+
+            perform.andExpect(status().isBadRequest());
+        }
+
+        @ParameterizedTest
+        @DisplayName("그룹의 부가설정이 없으면 실패한다.")
+        @MethodSource("inValidGroupAttributes")
+        void no_have_group_location(String attributes) throws Exception {
+            GroupCreateDto groupCreateDto = new GroupCreateDto(1L, "그룹1", "아녕하세요"
+                    , attributes, attributes, attributes, 30);
+
+            ResultActions perform = mockMvc.perform(post(ApiURLProvider.GROUP_API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(groupCreateDto)));
+
+            perform.andExpect(status().isBadRequest());
+        }
+
+        @ParameterizedTest
+        @DisplayName("그룹 소개가 비었으면 실패한다.")
+        @MethodSource("inValidGroupCapacity")
+        void no_have_group_capacity(int capacity) throws Exception {
+            GroupCreateDto groupCreateDto = new GroupCreateDto(1L, "그룹1", "안영하세요"
+                    , "경기도", "부천시", "FREE", capacity);
+
+            ResultActions perform = mockMvc.perform(post(ApiURLProvider.GROUP_API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(groupCreateDto)));
+
+            perform.andExpect(status().isBadRequest());
+        }
+
+        private Stream<Arguments> inValidMemberId() {
+            return Stream.of(
+                    Arguments.of((Object) null)
+            );
+        }
+
+        private Stream<Arguments> inValidGroupObject() {
+            return Stream.of(
+                    Arguments.of((Object) null),
+                    Arguments.of("")
+            );
+        }
+
+        private Stream<Arguments> inValidGroupAttributes() {
+            return Stream.of(
+                    Arguments.of((Object) null),
+                    Arguments.of(" "),
+                    Arguments.of("")
+            );
+        }
+
+        private Stream<Arguments> inValidGroupCapacity() {
+            return Stream.of(
+                    Arguments.of(1),
+                    Arguments.of(2),
+                    Arguments.of(3),
+                    Arguments.of(4),
+                    Arguments.of(5),
+                    Arguments.of(6),
+                    Arguments.of(7),
+                    Arguments.of(8),
+                    Arguments.of(9)
+            );
+        }
     }
 }
