@@ -45,19 +45,6 @@ class MemberApiControllerTests extends BaseApiConfig {
     @MockBean
     private MemberQueryService memberQueryService;
 
-    static class EmailSourceOutOfRange implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(
-                    Arguments.of((Object)null),
-                    Arguments.of(""),
-                    Arguments.of("\t"),
-                    Arguments.of("\n"),
-                    Arguments.of("user1")
-            );
-        }
-    }
-
     @DisplayName("회원가입 성공 테스트")
     @Test
     void post_signup() throws Exception {
@@ -144,6 +131,71 @@ class MemberApiControllerTests extends BaseApiConfig {
                     .content(toJson(createDto)));
 
             perform.andExpect(status().isBadRequest());
+        }
+
+        @DisplayName("이름을 작성하지 않아서 실패한다.")
+        @ParameterizedTest
+        @ArgumentsSource(UsernameSourceOutOfRange.class)
+        void not_input_username(String username) throws Exception {
+
+            SignupRequest createDto = new SignupRequest("user2@email.com", username, "안녕하세요", "12121212", "12121212");
+
+            ResultActions perform = mockMvc.perform(post(ApiURLProvider.MEMBER_API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(createDto)));
+
+            perform.andExpect(status().isBadRequest());
+        }
+
+        // TODO : 아직 조건을 만들지 않아서 실패하는 케이스.
+        @DisplayName("1차, 2차 패스워드가 일치하지 않아 실패한다.")
+        @ParameterizedTest
+        @ArgumentsSource(PasswordSourceOutOfRange.class)
+        void not_equals_password(String password, String confirmPassword) throws Exception {
+
+            SignupRequest createDto = new SignupRequest("user2@email.com", "하하", "안녕하세요", password, confirmPassword);
+
+            ResultActions perform = mockMvc.perform(post(ApiURLProvider.MEMBER_API_URL)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(toJson(createDto)));
+
+            perform.andExpect(status().isBadRequest());
+        }
+    }
+
+    static class EmailSourceOutOfRange implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(
+                    Arguments.of((Object)null),
+                    Arguments.of(""),
+                    Arguments.of("\t"),
+                    Arguments.of("\n"),
+                    Arguments.of("user1")
+            );
+        }
+    }
+
+    static class UsernameSourceOutOfRange implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(
+                    Arguments.of((Object)null),
+                    Arguments.of(""),
+                    Arguments.of("\t"),
+                    Arguments.of("\n")
+            );
+        }
+    }
+
+    static class PasswordSourceOutOfRange implements ArgumentsProvider {
+        @Override
+        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
+            return Stream.of(
+                    Arguments.of("12121212", "1212121212"),
+                    Arguments.of("21212121", "277272727"),
+                    Arguments.of("djskwkl2020", "3948dk2a")
+            );
         }
     }
 
