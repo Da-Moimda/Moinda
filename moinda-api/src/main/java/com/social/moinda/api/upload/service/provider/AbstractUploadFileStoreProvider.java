@@ -1,5 +1,6 @@
 package com.social.moinda.api.upload.service.provider;
 
+import com.social.moinda.core.domains.upload.constants.FileExtension;
 import com.social.moinda.core.domains.upload.dto.UploadResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,8 +68,7 @@ public abstract class AbstractUploadFileStoreProvider implements UploadFileStore
     }
 
     private void checkFileExtension(String fileExtension) {
-        // TODO : 확장자 검사 임시설정
-        if(!fileExtension.equalsIgnoreCase("png") && !fileExtension.equalsIgnoreCase("jpg")) {
+        if(!FileExtension.isValidExtension(fileExtension)) {
             throw new IllegalStateException("확장자 에러");
         }
     }
