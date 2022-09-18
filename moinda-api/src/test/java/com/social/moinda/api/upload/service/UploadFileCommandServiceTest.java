@@ -11,7 +11,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
@@ -25,8 +24,7 @@ import static org.mockito.BDDMockito.*;
 @ActiveProfiles("dev")
 class UploadFileCommandServiceTest {
 
-    @Value("${spring.servlet.multipart.location}")
-    private String directoryPath;
+    private static final String DIRECTORY_PATH = "c:\\moinda\\files\\";
 
     @Mock
     private UploadFileRepository uploadFileRepository;
@@ -36,7 +34,7 @@ class UploadFileCommandServiceTest {
 
     private final String UUID_S = UUID.randomUUID().toString();
     private final String ORIGINAL_FILE_NAME = "dogs.jpg";
-    private final UploadRequest UPLOAD_REQUEST = new UploadRequest(directoryPath, ORIGINAL_FILE_NAME, UUID_S);
+    private final UploadRequest UPLOAD_REQUEST = new UploadRequest(DIRECTORY_PATH, ORIGINAL_FILE_NAME, UUID_S);
 
     @DisplayName("파일을 업로드해서 저장에 성공한다.")
     @Test
