@@ -1,6 +1,9 @@
 package com.social.moinda.api.upload.service.provider;
 
+import com.social.moinda.api.upload.dto.UploadRequest;
+import com.social.moinda.api.upload.service.UploadFileCommandService;
 import com.social.moinda.core.domains.upload.dto.UploadResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,14 +12,20 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class DefaultUploadFileStoreProvider implements UploadFileStoreProvider {
 
     @Value("${spring.servlet.multipart.location}")
     private String prefixPath;
+
+    private static final String LOCAL_ROOT_PATH_PREFIX = "c:\\";
+
+    private final UploadFileCommandService uploadFileCommandService;
 
     @Override
     @Transactional
@@ -34,34 +43,41 @@ public class DefaultUploadFileStoreProvider implements UploadFileStoreProvider {
 
         doUploadFileValidation(multipartFiles);
 
-        List<UploadResponse> uploadResponses = executeUpload(multipartFiles, formattedDate);
+        String directoryPath = makeDirectory(prefixPath, formattedDate);
+
+        List<UploadResponse> uploadResponses = executeUpload(multipartFiles, directoryPath);
 
         return uploadResponses;
     }
 
-    private String getFormattedDate(Date now) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        return format.format(now);
-    }
+    @Transactional
+    public List<UploadResponse> executeUpload(MultipartFile[] multipartFiles, String directoryPath) {
 
-    private List<UploadResponse> executeUpload(MultipartFile[] multipartFiles, String date) {
-
-        String directoryPath = makeDirectory(prefixPath, date);
+        List<UploadResponse> responses = new LinkedList<>();
 
         for (MultipartFile multipartFile : multipartFiles) {
 
             String originalFilename = multipartFile.getOriginalFilename();
 
-            File file = new File(directoryPath + UUID.randomUUID() + "_" + originalFilename);
+            String uuid = UUID.randomUUID().toString();
+            String toSavedFullPath = LOCAL_ROOT_PATH_PREFIX + directoryPath + uuid + "_" + originalFilename;
+
+            File toSaveFile = new File(toSavedFullPath);
 
             try {
-                multipartFile.transferTo(file);
+                multipartFile.transferTo(toSaveFile);
+
+                UploadRequest uploadRequest = new UploadRequest(directoryPath, originalFilename, uuid);
+
+                UploadResponse uploadResponse = uploadFileCommandService.create(uploadRequest);
+
+                responses.add(uploadResponse);
             } catch (Exception e){
                 e.printStackTrace();
             }
         }
 
-        return null;
+        return responses;
     }
 
     private String makeDirectory(String... paths) {
@@ -74,13 +90,18 @@ public class DefaultUploadFileStoreProvider implements UploadFileStoreProvider {
         }
 
         String directoryPath = stringBuilder.toString();
-        File file = new File(directoryPath);
+        File file = new File(LOCAL_ROOT_PATH_PREFIX + directoryPath);
 
         if(!file.exists()) {
             file.mkdirs();
         }
 
         return directoryPath;
+    }
+
+    private String getFormattedDate(Date now) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        return format.format(now);
     }
 
     private void doUploadFileValidation(MultipartFile[] multipartFiles) {
