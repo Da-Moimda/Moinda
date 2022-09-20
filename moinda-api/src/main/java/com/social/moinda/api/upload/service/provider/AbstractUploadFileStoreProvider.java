@@ -1,5 +1,8 @@
 package com.social.moinda.api.upload.service.provider;
 
+import com.social.moinda.api.upload.exception.EmptyUploadFileException;
+import com.social.moinda.api.upload.exception.EmptyUploadFileNameException;
+import com.social.moinda.api.upload.exception.NotAllowFileExtensionException;
 import com.social.moinda.core.domains.upload.constants.FileExtension;
 import com.social.moinda.core.domains.upload.dto.UploadResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +45,7 @@ public abstract class AbstractUploadFileStoreProvider implements UploadFileStore
             String originalFilename = multipartFile.getOriginalFilename();
 
             if(originalFilename == null) {
-                throw new IllegalStateException("파일이 없습니다.");
+                throw new EmptyUploadFileException();
             }
 
             int separatorFileNameAndExtensionIndex = originalFilename.lastIndexOf(".");
@@ -54,7 +57,7 @@ public abstract class AbstractUploadFileStoreProvider implements UploadFileStore
             String fileName = originalFilename.substring(0, separatorFileNameAndExtensionIndex);
 
             if(fileName.isEmpty()) {
-                throw new IllegalStateException("파일 이름이 없습니다.");
+                throw new EmptyUploadFileNameException();
             }
         }
     }
@@ -69,7 +72,7 @@ public abstract class AbstractUploadFileStoreProvider implements UploadFileStore
 
     private void checkFileExtension(String fileExtension) {
         if(!FileExtension.isValidExtension(fileExtension)) {
-            throw new IllegalStateException("확장자 에러");
+            throw new NotAllowFileExtensionException();
         }
     }
 
