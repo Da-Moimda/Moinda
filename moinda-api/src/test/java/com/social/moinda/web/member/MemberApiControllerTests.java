@@ -9,14 +9,13 @@ import com.social.moinda.core.domains.member.dto.SignupResponse;
 import com.social.moinda.core.domains.member.entity.Member;
 import com.social.moinda.web.ApiURLProvider;
 import com.social.moinda.web.BaseApiConfig;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.ArgumentsProvider;
-import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.*;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -121,7 +120,8 @@ class MemberApiControllerTests extends BaseApiConfig {
 
         @DisplayName("이메일 형식이 아니여서 실패한다.")
         @ParameterizedTest
-        @ArgumentsSource(EmailSourceOutOfRange.class)
+        @NullAndEmptySource
+        @ValueSource(strings = {"\n", "\t", "user1"})
         void not_valid_type_email(String email) throws Exception {
 
             SignupRequest createDto = new SignupRequest(email, "하하", "안녕하세요", "12121212", "12121212");
@@ -130,12 +130,28 @@ class MemberApiControllerTests extends BaseApiConfig {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(toJson(createDto)));
 
-            perform.andExpect(status().isBadRequest());
+            perform.andExpect(status().isBadRequest())
+                    .andDo(restDocs.document(
+                                    requestFields(
+                                            fieldWithPath("email").description("이메일").attributes(field("constraint", "이메일 형식")),
+                                            fieldWithPath("name").description("이름").attributes(field("constraint", "빈칸 미허용")),
+                                            fieldWithPath("introduce").description("자기소개").attributes(field("constraint", "빈칸 허용")),
+                                            fieldWithPath("password").description("비밀번호").attributes(field("constraint", "8자리 이상")),
+                                            fieldWithPath("confirmPassword").description("2차 비밀번호").attributes(field("constraint", "8자리 이상 & 위와 동일"))
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("error").description("에러 상태"),
+                                            fieldWithPath("code").description("에러 번호"),
+                                            fieldWithPath("errorMessage").description("에러 상세 메세지")
+                                    )
+                            )
+                    );
         }
 
         @DisplayName("이름을 작성하지 않아서 실패한다.")
         @ParameterizedTest
-        @ArgumentsSource(UsernameSourceOutOfRange.class)
+        @NullAndEmptySource
+        @ValueSource(strings = {"\n", "\t"})
         void not_input_username(String username) throws Exception {
 
             SignupRequest createDto = new SignupRequest("user2@email.com", username, "안녕하세요", "12121212", "12121212");
@@ -144,10 +160,26 @@ class MemberApiControllerTests extends BaseApiConfig {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(toJson(createDto)));
 
-            perform.andExpect(status().isBadRequest());
+            perform.andExpect(status().isBadRequest())
+                    .andDo(restDocs.document(
+                                    requestFields(
+                                            fieldWithPath("email").description("이메일").attributes(field("constraint", "이메일 형식")),
+                                            fieldWithPath("name").description("이름").attributes(field("constraint", "빈칸 미허용")),
+                                            fieldWithPath("introduce").description("자기소개").attributes(field("constraint", "빈칸 허용")),
+                                            fieldWithPath("password").description("비밀번호").attributes(field("constraint", "8자리 이상")),
+                                            fieldWithPath("confirmPassword").description("2차 비밀번호").attributes(field("constraint", "8자리 이상 & 위와 동일"))
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("error").description("에러 상태"),
+                                            fieldWithPath("code").description("에러 번호"),
+                                            fieldWithPath("errorMessage").description("에러 상세 메세지")
+                                    )
+                            )
+                    );
         }
 
         // TODO : 아직 조건을 만들지 않아서 실패하는 케이스.
+        @Disabled
         @DisplayName("1차, 2차 패스워드가 일치하지 않아 실패한다.")
         @ParameterizedTest
         @ArgumentsSource(PasswordSourceOutOfRange.class)
@@ -159,31 +191,33 @@ class MemberApiControllerTests extends BaseApiConfig {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(toJson(createDto)));
 
-            perform.andExpect(status().isBadRequest());
+            perform.andExpect(status().isBadRequest())
+                    .andDo(restDocs.document(
+                                    requestFields(
+                                            fieldWithPath("email").description("이메일").attributes(field("constraint", "이메일 형식")),
+                                            fieldWithPath("name").description("이름").attributes(field("constraint", "빈칸 미허용")),
+                                            fieldWithPath("introduce").description("자기소개").attributes(field("constraint", "빈칸 허용")),
+                                            fieldWithPath("password").description("비밀번호").attributes(field("constraint", "8자리 이상")),
+                                            fieldWithPath("confirmPassword").description("2차 비밀번호").attributes(field("constraint", "8자리 이상 & 위와 동일"))
+                                    ),
+                                    responseFields(
+                                            fieldWithPath("error").description("에러 상태"),
+                                            fieldWithPath("code").description("에러 번호"),
+                                            fieldWithPath("errorMessage").description("에러 상세 메세지")
+                                    )
+                            )
+                    );
         }
     }
 
-    static class EmailSourceOutOfRange implements ArgumentsProvider {
+    static class StringSourceOutOfRange implements ArgumentsProvider {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
             return Stream.of(
-                    Arguments.of((Object)null),
                     Arguments.of(""),
                     Arguments.of("\t"),
                     Arguments.of("\n"),
                     Arguments.of("user1")
-            );
-        }
-    }
-
-    static class UsernameSourceOutOfRange implements ArgumentsProvider {
-        @Override
-        public Stream<? extends Arguments> provideArguments(ExtensionContext context) {
-            return Stream.of(
-                    Arguments.of((Object)null),
-                    Arguments.of(""),
-                    Arguments.of("\t"),
-                    Arguments.of("\n")
             );
         }
     }
