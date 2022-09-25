@@ -5,23 +5,15 @@ import com.social.moinda.api.group.exception.NotFoundGroupException;
 import com.social.moinda.api.group.exception.RegisteredGroupNameException;
 import com.social.moinda.api.groupmember.exception.AlreadyJoinGroupMemberException;
 import com.social.moinda.api.member.exception.NotFoundMemberException;
-import com.social.moinda.core.exception.ErrorCode;
 import com.social.moinda.core.exception.ErrorResponse;
 import com.social.moinda.web.group.GroupApiController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice(basePackageClasses = GroupApiController.class)
 public class GroupApiControllerAdvice {
-
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> invalidRequestBodyHandler(BindingResult bindingResult) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorCode.notValidRequestResponse(bindingResult));
-    }
 
     @ExceptionHandler(value = NotFoundGroupException.class)
     public ResponseEntity<ErrorResponse> notFoundGroupExceptionHandler(NotFoundGroupException ex) {
