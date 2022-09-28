@@ -55,6 +55,15 @@ public class GroupRepositoryTests {
 
     }
 
+    @DisplayName("경기도로 조회하기.")
+    @Test
+    public void 경기도로_조회하기() {
+        List<Group> all = groupRepository.findAll();
+        all.forEach(System.out::println);
+        List<Group> 경기도 = groupRepository.findGroupsByLocationSi("시흥히");
+        System.out.println("경기도 = " + 경기도);
+    }
+
      @TestConfiguration
      @EnableJpaAuditing
      static class Config{
